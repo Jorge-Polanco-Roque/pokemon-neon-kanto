@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "Bulbasaur",
+    "design": "small recognizable Bulbasaur with turquoise organic skin, a transparent glass terrarium bulb containing a miniature luminous pink bonsai, brass articulated front leg, fibre optic vines and a cyan monocular sensor",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 2,
+    "name": "Ivysaur",
+    "design": "recognizable Ivysaur with dark teal organic skin, an opening magenta lotus antenna on its back, botanical power cables, titanium front shoulder armor, larger than Bulbasaur",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 3,
+    "name": "Venusaur",
+    "design": "recognizable massive Venusaur carrying a spectacular solar-petal canopy with pink neon translucent petals, miniature greenhouse ecosystem, moss over armored titanium legs, bioluminescent vines",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Venusaur as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable massive Venusaur carrying a spectacular solar-petal canopy with pink neon translucent petals, miniature greenhouse ecosystem, moss over armored titanium legs, bioluminescent vines. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 4,
+    "name": "Charmander",
+    "design": "recognizable small orange Charmander with a transparent mechanical tail containing a bright amber plasma flame, one tiny chrome arm and a glowing cyan cybernetic eye, cute brave stance",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Charmander as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable small orange Charmander with a transparent mechanical tail containing a bright amber plasma flame, one tiny chrome arm and a glowing cyan cybernetic eye, cute brave stance. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 5,
+    "name": "Charmeleon",
+    "design": "recognizable red Charmeleon with segmented obsidian forearm armor, white-hot plasma claw, copper cooling fins down its spine and an orange reactor tail",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Charmeleon as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable red Charmeleon with segmented obsidian forearm armor, white-hot plasma claw, copper cooling fins down its spine and an orange reactor tail. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 6,
+    "name": "Charizard",
+    "design": "recognizable imposing orange Charizard with huge open wings whose membranes are cyan holographic energy panels within black titanium spars, white plasma tail flame, armored chest reactor, all wings inside frame",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 7,
+    "name": "Squirtle",
+    "design": "recognizable cheerful blue Squirtle with a transparent aquarium shell full of turquoise coolant, tiny bronze turbines, a blue visor and one chrome foot",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Squirtle as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable cheerful blue Squirtle with a transparent aquarium shell full of turquoise coolant, tiny bronze turbines, a blue visor and one chrome foot. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 8,
+    "name": "Wartortle",
+    "design": "recognizable Wartortle with silver fin ears, a translucent spiral data-cloud tail, deep blue skin, ceramic shell armor and two miniature cyan hydrojet nozzles",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Use case: stylized-concept. Create a single isolated full-body game character: recognizable Wartortle with silver fin ears, a translucent spiral data-cloud tail, deep blue skin, ceramic shell armor and two miniature cyan hydrojet nozzles. A friendly adventurous cyberpunk redesign of Wartortle for a colorful 2D monster-collecting video game. Charming expressive character, playful fantasy technology, rounded safe mechanical details. Polished crisp cel-shaded game illustration, bold midnight outlines, cyan and pink emissive accents, recognizable silhouette, three-quarter front view facing left. Square canvas, entire creature centered with 12% margin on every side. Genuine transparent background. No text, no labels, no floor, no other characters."
+  },
+  {
+    "id": 9,
+    "name": "Blastoise",
+    "design": "recognizable heavyweight Blastoise with twin massive chrome hydro-rail cannons over shoulders, navy and white armored shell, luminous cyan pressure tubes, organic blue limbs",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 25,
+    "name": "Pikachu",
+    "design": "recognizable yellow Pikachu, one copper antenna ear, lightning bolt tail made of segmented black carbon with yellow LEDs, magenta cybernetic cheek capacitor, small utility harness",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 26,
+    "name": "Raichu",
+    "design": "recognizable orange Raichu with wide tesla-coil ears, floating segmented lightning tail linked by electrical arcs, copper exoskeletal gauntlets, warm yellow energy core",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 133,
+    "name": "Eevee",
+    "design": "recognizable cute brown Eevee with fluffy cream neck fur interwoven with soft glowing fibre optics, one holographic cyan ear tip, a tiny modular chrome collar and a translucent tail tip",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Eevee as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable cute brown Eevee with fluffy cream neck fur interwoven with soft glowing fibre optics, one holographic cyan ear tip, a tiny modular chrome collar and a translucent tail tip. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 134,
+    "name": "Vaporeon",
+    "design": "recognizable elegant blue Vaporeon with a translucent liquid-light body, pearl ceramic gill fins, bright cyan spine circuitry and a flowing holographic fish tail",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Vaporeon as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable elegant blue Vaporeon with a translucent liquid-light body, pearl ceramic gill fins, bright cyan spine circuitry and a flowing holographic fish tail. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 135,
+    "name": "Jolteon",
+    "design": "recognizable yellow Jolteon with sharp electric crystalline fur as gold circuit blades, sleek carbon mechanical paws, electric-blue eye and bright neon quills",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Use the attached sprite as the character reference. Redesign it as a charming, polished futuristic game companion with beautiful mechanical upgrades. Preserve its recognizable body silhouette, expression and species colors. Specific design: recognizable yellow Jolteon with sharp electric crystalline fur as gold circuit blades, sleek carbon mechanical paws, electric-blue eye and bright neon quills. Replace the low-resolution pixel rendering with a detailed crisp cel-shaded 2D game illustration, elegant black outlines, cyan and magenta luminous accents. This is playful science-fiction character design with no injury imagery. Three-quarter front view facing left. Entire body, tail and wings visible, centered with 12% margin, genuinely transparent background. No text, no ground, no other creatures."
+  },
+  {
+    "id": 92,
+    "name": "Gastly",
+    "design": "recognizable Gastly with expressive round black face floating within a violet cloud made of digital glitch blocks, small magenta orbiting holographic rings and a single mechanical optical lens",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Gastly as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable Gastly with expressive round black face floating within a violet cloud made of digital glitch blocks, small magenta orbiting holographic rings and a single mechanical optical lens. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 93,
+    "name": "Haunter",
+    "design": "recognizable angular purple Haunter with detached mechanical claw hands levitating on violet magnetic rings, transparent glitching body, expressive mischievous face and cyan circuit veins",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  },
+  {
+    "id": 94,
+    "name": "Gengar",
+    "design": "recognizable grinning round purple Gengar with a half-organic half-translucent holographic torso revealing a floating magenta core, digital pixel smoke, one chrome claw and mischievous red eyes",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Gengar as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable grinning round purple Gengar with a half-organic half-translucent holographic torso revealing a floating magenta core, digital pixel smoke, one chrome claw and mischievous red eyes. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 123,
+    "name": "Scyther",
+    "design": "recognizable green mantis Scyther with elegant titanium scythe forearms edged in cyan plasma, translucent drone wings, organic emerald armor and orange sensor nodes",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Scyther as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable green mantis Scyther with elegant titanium scythe forearms edged in cyan plasma, translucent drone wings, organic emerald armor and orange sensor nodes. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 212,
+    "name": "Scizor",
+    "design": "recognizable powerful red Scizor with glossy crimson carbon armor, massive robotic pincer gauntlets emitting amber light, exposed titanium joints and four small holographic flight vanes",
+    "method": "imagegen",
+    "path": null,
+    "prompt": "Create one polished 2D game sprite illustration of Scizor as a friendly futuristic robot companion. It is an entirely artificial fantasy robot, made of colorful ceramic, glass and metal, with no injury or surgical imagery. Design direction: recognizable powerful red Scizor with glossy crimson carbon armor, massive robotic pincer gauntlets emitting amber light, exposed titanium joints and four small holographic flight vanes. Beautiful hand-painted cel shading, strong dark outline, clear expressive recognizable silhouette, cyan and magenta lights. Front three-quarter view facing left, complete full body including tail and wings, centered on a genuinely transparent background, generous margin all around, square composition. No text, no other subjects, no scenery, no ground plane."
+  },
+  {
+    "id": 137,
+    "name": "Porygon",
+    "design": "recognizable geometric origami-like pink and blue Porygon with floating separated polygon panels linked by holographic wireframes, cyan core, glass prism tail, a playful low-poly cybernetic bird",
+    "method": "native_augmentation",
+    "path": null,
+    "prompt": "Evolution edit of cyber Bulbasaur: magenta lotus bud, brass cradle, cyan vines."
+  }
+]

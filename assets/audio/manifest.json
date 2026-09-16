@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "file": "1.wav",
+    "duration": 0.68,
+    "peak": 21015
+  },
+  {
+    "id": 2,
+    "file": "2.wav",
+    "duration": 0.77,
+    "peak": 20825
+  },
+  {
+    "id": 3,
+    "file": "3.wav",
+    "duration": 0.86,
+    "peak": 21314
+  },
+  {
+    "id": 4,
+    "file": "4.wav",
+    "duration": 0.95,
+    "peak": 21718
+  },
+  {
+    "id": 5,
+    "file": "5.wav",
+    "duration": 0.68,
+    "peak": 20954
+  },
+  {
+    "id": 6,
+    "file": "6.wav",
+    "duration": 0.77,
+    "peak": 20887
+  },
+  {
+    "id": 7,
+    "file": "7.wav",
+    "duration": 0.86,
+    "peak": 21716
+  },
+  {
+    "id": 8,
+    "file": "8.wav",
+    "duration": 0.95,
+    "peak": 21739
+  },
+  {
+    "id": 9,
+    "file": "9.wav",
+    "duration": 0.68,
+    "peak": 20763
+  },
+  {
+    "id": 25,
+    "file": "25.wav",
+    "duration": 0.77,
+    "peak": 21768
+  },
+  {
+    "id": 26,
+    "file": "26.wav",
+    "duration": 0.86,
+    "peak": 21253
+  },
+  {
+    "id": 133,
+    "file": "133.wav",
+    "duration": 0.95,
+    "peak": 21938
+  },
+  {
+    "id": 134,
+    "file": "134.wav",
+    "duration": 0.68,
+    "peak": 20932
+  },
+  {
+    "id": 135,
+    "file": "135.wav",
+    "duration": 0.77,
+    "peak": 20289
+  },
+  {
+    "id": 92,
+    "file": "92.wav",
+    "duration": 0.86,
+    "peak": 20574
+  },
+  {
+    "id": 93,
+    "file": "93.wav",
+    "duration": 0.95,
+    "peak": 22079
+  },
+  {
+    "id": 94,
+    "file": "94.wav",
+    "duration": 0.68,
+    "peak": 19434
+  },
+  {
+    "id": 123,
+    "file": "123.wav",
+    "duration": 0.77,
+    "peak": 21760
+  },
+  {
+    "id": 212,
+    "file": "212.wav",
+    "duration": 0.86,
+    "peak": 22223
+  },
+  {
+    "id": 137,
+    "file": "137.wav",
+    "duration": 0.95,
+    "peak": 20837
+  }
+]

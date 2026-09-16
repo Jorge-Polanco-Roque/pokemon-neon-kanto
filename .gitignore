@@ -1,0 +1,15 @@
+# Godot 4+ import cache & derived files
+.godot/
+*.tmp
+
+# Exported builds
+*.pck
+*.zip
+*.dmg
+*.app/
+export/
+build/
+
+# OS cruft
+.DS_Store
+Thumbs.db

@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "BULBASAUR",
+    "type": "PLANTA",
+    "concept": "Jardín de silicio",
+    "description": "Un bonsái fotónico crece dentro de su reactor de vidrio. Sus raíces reparan circuitos."
+  },
+  {
+    "id": 2,
+    "name": "IVYSAUR",
+    "type": "PLANTA",
+    "concept": "Loto antena",
+    "description": "Su capullo recibe señales de los jardines orbitales. Canaliza energía en sus prótesis."
+  },
+  {
+    "id": 3,
+    "name": "VENUSAUR",
+    "type": "PLANTA",
+    "concept": "Arca botánica",
+    "description": "Sus pétalos solares alimentan un pequeño bosque. Purifica la lluvia ácida de la ciudad."
+  },
+  {
+    "id": 4,
+    "name": "CHARMANDER",
+    "type": "FUEGO",
+    "concept": "Chispa de plasma",
+    "description": "Una llama de plasma late en su cola transparente. Lleva un pequeño brazo de cromo."
+  },
+  {
+    "id": 5,
+    "name": "CHARMELEON",
+    "type": "FUEGO",
+    "concept": "Forja escarlata",
+    "description": "Sus aletas de cobre disipan el calor. Afila garras de luz en las fundiciones nocturnas."
+  },
+  {
+    "id": 6,
+    "name": "CHARIZARD",
+    "type": "FUEGO",
+    "concept": "Ala de fotones",
+    "description": "Proyecta alas de energía entre costillas de titanio. Su reactor ilumina el cielo de Neón Kanto."
+  },
+  {
+    "id": 7,
+    "name": "SQUIRTLE",
+    "type": "AGUA",
+    "concept": "Núcleo acuático",
+    "description": "Su caparazón es un acuario refrigerante. Dos turbinas reciclan cada gota de agua."
+  },
+  {
+    "id": 8,
+    "name": "WARTORTLE",
+    "type": "AGUA",
+    "concept": "Corriente espectral",
+    "description": "Su cola es una espiral de datos líquidos. Sus orejas cerámicas detectan fugas subterráneas."
+  },
+  {
+    "id": 9,
+    "name": "BLASTOISE",
+    "type": "AGUA",
+    "concept": "Bastión hidráulico",
+    "description": "Dos cañones hidráulicos protegen los canales. Tubos de presión cian recorren su coraza."
+  },
+  {
+    "id": 25,
+    "name": "PIKACHU",
+    "type": "ELÉCTRICO",
+    "concept": "Pulso de cobre",
+    "description": "Almacena cargas en sus mejillas-capacitor. Su cola articulada puede reiniciar un barrio."
+  },
+  {
+    "id": 26,
+    "name": "RAICHU",
+    "type": "ELÉCTRICO",
+    "concept": "Corona Tesla",
+    "description": "Su cola levita en segmentos unidos por arcos. Las orejas son bobinas de alta frecuencia."
+  },
+  {
+    "id": 133,
+    "name": "EEVEE",
+    "type": "NORMAL",
+    "concept": "Protocolo adaptable",
+    "description": "Fibras ópticas se mezclan con su pelaje. Su collar modular admite dos rutas de evolución."
+  },
+  {
+    "id": 134,
+    "name": "VAPOREON",
+    "type": "AGUA",
+    "concept": "Flujo holográfico",
+    "description": "Su cuerpo mezcla agua y luz. Atraviesa las tuberías como una corriente de datos."
+  },
+  {
+    "id": 135,
+    "name": "JOLTEON",
+    "type": "ELÉCTRICO",
+    "concept": "Espina de voltaje",
+    "description": "Sus púas son cristales conductores. Cada paso deja una breve firma eléctrica."
+  },
+  {
+    "id": 92,
+    "name": "GASTLY",
+    "type": "FANTASMA",
+    "concept": "Eco de red",
+    "description": "Una nube de píxeles envuelve su rostro. Se esconde en los anuncios averiados."
+  },
+  {
+    "id": 93,
+    "name": "HAUNTER",
+    "type": "FANTASMA",
+    "concept": "Garra remota",
+    "description": "Sus manos mecánicas levitan sin cables. Disfruta alterando los letreros holográficos."
+  },
+  {
+    "id": 94,
+    "name": "GENGAR",
+    "type": "FANTASMA",
+    "concept": "Espectro de neón",
+    "description": "Un núcleo magenta flota en su torso holográfico. Su sonrisa aparece antes que su cuerpo."
+  },
+  {
+    "id": 123,
+    "name": "SCYTHER",
+    "type": "BICHO",
+    "concept": "Filo de ion",
+    "description": "Sus guadañas de titanio brillan con plasma. Patrulla los invernaderos suspendidos."
+  },
+  {
+    "id": 212,
+    "name": "SCIZOR",
+    "type": "ACERO",
+    "concept": "Pinza de asedio",
+    "description": "Su armadura de carbono carmesí resiste sobrecargas. Ajusta sus pinzas con servomotores."
+  },
+  {
+    "id": 137,
+    "name": "PORYGON",
+    "type": "NORMAL",
+    "concept": "Origami cuántico",
+    "description": "Sus placas geométricas flotan alrededor de un núcleo. Nació en la primera red de la ciudad."
+  }
+]
