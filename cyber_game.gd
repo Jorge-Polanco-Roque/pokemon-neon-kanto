@@ -28,6 +28,34 @@ func _ready():
  add_child(cry_player)
  for id in SPECIES: voices[id] = load("res://assets/audio/"+str(id)+".wav")
  if "--cyber-test" in OS.get_cmdline_user_args(): call_deferred("test_cyber")
+ if "--shots" in OS.get_cmdline_user_args(): call_deferred("capture_shots")
+
+func _shot(name: String):
+ await get_tree().process_frame
+ await get_tree().process_frame
+ await get_tree().create_timer(0.35).timeout
+ get_viewport().get_texture().get_image().save_png("res://shot-"+name+".png")
+
+func capture_shots():
+ muted = true
+ mode = "title"
+ await _shot("title")
+ reset_game()
+ action("starter:7")
+ seen = SPECIES.keys()
+ captured = SPECIES.keys()
+ party = [mon(7,16), mon(4,14), mon(25,12)]
+ active = 0
+ mode = "world"
+ await _shot("world")
+ start_battle(mon(4,7))
+ await _shot("battle")
+ mode = "dex"
+ await _shot("dex")
+ dex_selected = 6
+ mode = "detail"
+ await _shot("detail")
+ get_tree().quit()
 
 func cry(id: int):
  if muted or not voices.has(id): return

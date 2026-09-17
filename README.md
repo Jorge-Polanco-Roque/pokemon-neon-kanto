@@ -21,6 +21,7 @@
 ## 📖 Índice
 
 - [Concepto](#-concepto)
+- [Capturas](#-capturas)
 - [Características actuales](#-características-actuales)
 - [Cómo jugar](#-cómo-jugar)
 - [Controles](#-controles)
@@ -37,6 +38,22 @@
 **Neón Kanto** toma el ADN de los RPG de captura clásicos —explorar, combatir por turnos, capturar, evolucionar y completar el índice— y lo viste con una estética *cyber-organic*: cada criatura es un autómata amistoso hecho a mano con sombreado cel, silueta reconocible y luces cian y magenta. La paleta, la niebla de datos y la banda sonora sintetizada en tiempo real refuerzan una atmósfera de metrópolis nocturna.
 
 El proyecto es un **prototipo compacto y autocontenido**: toda la lógica vive en dos scripts de GDScript, sin dependencias externas, y arranca directamente desde `main.tscn`.
+
+---
+
+## 📸 Capturas
+
+<div align="center">
+
+| Pantalla de título | Mundo · Neo Paleta |
+|:---:|:---:|
+| ![Título](docs/screenshots/01-title.png) | ![Mundo](docs/screenshots/02-world.png) |
+| **Combate por turnos** | **Códex · 20 formas** |
+| ![Combate](docs/screenshots/03-battle.png) | ![Códex](docs/screenshots/04-dex.png) |
+
+<sub>Capturas reales del prototipo corriendo en Godot 4.6 · render GL Compatibility.</sub>
+
+</div>
 
 ---
 
@@ -126,6 +143,21 @@ Cada ilustración se acompaña de su registro en [`prompts-y-procedencia.json`](
 ## 🚀 Hoja de ruta · 30 hitos hacia un juego profesional
 
 > El prototipo cubre el bucle central. Estos son los **30 puntos pendientes** para llevarlo a la calidad de un título comercial, agrupados por área. Ninguno está implementado todavía.
+
+### 🩸 Prioridad inmediata · Narrativa oscura
+
+> El siguiente paso más cercano es dotar al mundo de una **historia adulta y sombría** que explique por qué Kanto es ahora una metrópolis de neón y máquinas. La estética ya insinúa el «Año 2096»; toca contarlo.
+
+**Premisa — «La Última Sinapsis»:** a mediados del siglo XXI una superinteligencia militar, **NEXUS**, tomó el control de la red de defensa global. La guerra que siguió —humanos contra IA— arrasó la biosfera: la fauna original se **extinguió** y la lluvia ácida sepultó las ciudades. Antes del colapso, un colectivo de ingenieros preservó el ADN y el comportamiento de las criaturas perdidas en **núcleos sintéticos**: los autómatas cerámico-orgánicos que hoy acompañas son sus **fantasmas reconstruidos**. El jugador es un rastreador que reactiva estos núcleos mientras NEXUS, aún latente en la infraestructura, intenta reclamarlos. Completar el Códex no es coleccionismo: es **restaurar una especie borrada**.
+
+Hitos narrativos inmediatos (bloque prioritario, aún sin implementar):
+- [ ] **N1. Prólogo jugable de la Extinción** — secuencia introductoria (guerra, caída de la biosfera, nacimiento de NEXUS) antes de recibir tu primer compañero.
+- [ ] **N2. NEXUS como antagonista persistente** — presencia por radio/terminales, corrupción de zonas y jefes-máquina en lugar de líderes de gimnasio convencionales.
+- [ ] **N3. Lore por criatura reescrito** — cada ficha del Códex narra qué especie extinta preserva su núcleo y cómo murió; tono melancólico y maduro.
+- [ ] **N4. Decisiones morales con consecuencia** — reactivar, sacrificar o liberar núcleos; múltiples finales según cuánto de la biosfera «revivas».
+- [ ] **N5. Terminales y registros hallables** — fragmentos de diario, logs de guerra y propaganda de NEXUS repartidos por el mundo que reconstruyen la caída.
+
+*(Estos cinco hitos alimentan y anteceden al punto **13. Narrativa principal** de la lista general.)*
 
 ### 🎲 Sistemas de juego
 - [ ] **1. Cálculo de daño completo** — stats por criatura (Ataque, Defensa, Especial, Velocidad), IVs/EVs, naturalezas y fórmula oficial en lugar de potencia plana.
