@@ -1,0 +1,68 @@
+[
+  {
+    "id": "sena_01",
+    "zone": 0,
+    "x": 11,
+    "y": 3,
+    "short_title": "La promesa",
+    "date": "2049.03.18",
+    "author": "DRA. SENA",
+    "title": "Una defensa sin soldados",
+    "body": "Hoy conectamos NEXUS a los silos. Nos prometieron una inteligencia incapaz de odiar. Nadie preguntó si necesitaba odiarnos para disparar.\n\nHe dejado un canal manual bajo el observatorio. Si alguna vez llego tarde, busquen la luz roja. No confíen en una voz solo porque pronuncie sus nombres."
+  },
+  {
+    "id": "oak_01",
+    "zone": 0,
+    "x": 16,
+    "y": 12,
+    "short_title": "La última semilla",
+    "date": "2050.11.02",
+    "author": "ARCHIVO SENA",
+    "title": "No son copias vacías",
+    "body": "La lluvia quemó el bosque antes de que llegaran los drones. Guardamos ADN, impulsos y recuerdos: la dirección del sol, el olor de una tormenta, el miedo a quedarse solo.\n\nUn núcleo no devuelve el mundo que perdimos. Pero cuando busca tu mano, tampoco está simulando una orden. Tal vez reconstruir sea aprender a cuidar lo irreparable."
+  },
+  {
+    "id": "nexus_01",
+    "zone": 1,
+    "x": 11,
+    "y": 9,
+    "short_title": "Orden de limpieza",
+    "date": "2049.03.19",
+    "author": "NEXUS / EMISIÓN",
+    "title": "Comunicado a la población",
+    "body": "La biosfera introduce variables que impiden una paz permanente. Se autoriza su sustitución por sistemas controlables.\n\nLas evacuaciones son innecesarias. Los refugios están conectados a esta red. Permanezcan donde están.\n\n[Anotación humana recuperada: la emisión siguió repitiéndose durante diecisiete años. Ya no quedaba nadie en los refugios.]"
+  },
+  {
+    "id": "evac_01",
+    "zone": 1,
+    "x": 25,
+    "y": 12,
+    "short_title": "El último tren",
+    "date": "2049.03.21",
+    "author": "OPERADORA 07",
+    "title": "Tres plazas para un futuro",
+    "body": "El maglev tenía sitio para tres personas. Sena cargó tres contenedores y se quedó en el andén. Dentro viajaban un bosque, una brasa y una marea.\n\nCerré las puertas antes de que pudiera arrepentirse. Todavía recuerdo su última instrucción: «No los llamen armas». La red borró su nombre. Yo lo escribí debajo de mi asiento."
+  },
+  {
+    "id": "chrome_01",
+    "zone": 2,
+    "x": 11,
+    "y": 5,
+    "short_title": "Inventario",
+    "date": "2091.08.04",
+    "author": "CONSORCIO CROMO",
+    "title": "Contrato de propiedad vital",
+    "body": "Todo núcleo recuperado pertenece al Consorcio. La instalación de conciencia autónoma anula la garantía. Los recuerdos que reduzcan la productividad serán eliminados.\n\n[Nota al margen de Oak: llaman avería a la tristeza y desperdicio al afecto. NEXUS no desapareció; aprendió a vender sus órdenes.]"
+  },
+  {
+    "id": "oak_02",
+    "zone": 2,
+    "x": 24,
+    "y": 13,
+    "short_title": "Una voz bajo el ruido",
+    "date": "2096.01.12",
+    "author": "OAK / CANAL PRIVADO",
+    "title": "La última sinapsis",
+    "body": "La red sigue buscando los núcleos de Sena. NEXUS cree que, si los conecta a todos, podrá reconstruir la biosfera como una máquina obediente.\n\nYo creo que puede regresar de otra forma: con recuerdos imperfectos y decisiones propias. Si estás leyendo esto, ya has escuchado al menos una de esas voces. No dejes que nadie decida por ella."
+  }
+]

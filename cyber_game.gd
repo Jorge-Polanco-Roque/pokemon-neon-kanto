@@ -15,12 +15,13 @@ var evolving = {}
 var map_weather = true
 var native_augmented: Array = []
 var defeated_trainers = 0
+var ground_pivots = {}
 
 func _ready():
  texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
  super._ready()
  if FileAccess.file_exists("res://assets/art_manifest.json"):
-  native_augmented=JSON.parse_string(FileAccess.get_file_as_string("res://assets/art_manifest.json")).get("native_augmented",[])
+  for value in JSON.parse_string(FileAccess.get_file_as_string("res://assets/art_manifest.json")).get("native_augmented",[]): native_augmented.append(int(value))
  var rows = JSON.parse_string(FileAccess.get_file_as_string("res://catalog.json"))
  for row in rows: catalog[int(row.id)] = row
  cry_player = AudioStreamPlayer.new()
@@ -56,6 +57,15 @@ func capture_shots():
  mode = "detail"
  await _shot("detail")
  get_tree().quit()
+
+func ground_origin(id:int, anchor:Vector2, size:float, mirrored:bool)->Vector2:
+ if not ground_pivots.has(id):
+  var img=sprites[str(id)].get_image()
+  var bounds=img.get_used_rect()
+  ground_pivots[id]=Vector2(float(bounds.position.x+bounds.size.x*0.5)/img.get_width(),float(bounds.end.y)/img.get_height())
+ var pivot:Vector2=ground_pivots[id]
+ if mirrored: pivot.x=1.0-pivot.x
+ return anchor-pivot*size
 
 func cry(id: int):
  if muted or not voices.has(id): return
@@ -167,17 +177,23 @@ func load_game():
  if mode=="world":
   var d=JSON.parse_string(FileAccess.get_file_as_string(SAVE))
   archive=d.get("archive",[])
+  seen=seen.map(func(v):return int(v))
+  captured=captured.map(func(v):return int(v))
   for p in party+archive:
+   CombatRules.normalize(p,SPECIES[int(p.id)][1])
    p.id=int(p.id)
    p.level=int(p.level)
   cry(int(party[active].id))
 
 func evolve_after_victory():
- var id=int(party[active].id)
- if EVOLUTIONS.has(id) and EVOLUTIONS[id].size()==1 and party[active].level>=EV_LEVEL[id]:
-  await evolve(active,EVOLUTIONS[id][0],"battle")
- elif id==133 and party[active].level>=8:
-  toast("Eevee puede evolucionar: elige su ruta desde EQUIPO.")
+ var participants=battle_participants if not battle_participants.is_empty() else [active]
+ for index in participants:
+  if index<0 or index>=party.size() or party[index].hp<=0: continue
+  var id=int(party[index].id)
+  if EVOLUTIONS.has(id) and EVOLUTIONS[id].size()==1 and party[index].level>=EV_LEVEL[id]:
+   await evolve(index,EVOLUTIONS[id][0],"battle")
+  elif id==133 and party[index].level>=8:
+   toast("Eevee puede evolucionar: elige su ruta desde EQUIPO.")
 
 func apply_evolution(i: int,target: int):
  var p=party[i]
@@ -273,12 +289,10 @@ func button(r:Rect2,title:String,a:String,color=INK):
 func sprite(id:int,at:Vector2,size:float,back=false,alpha=1.0):
  if not sprites.has(str(id)): return
  var texture=sprites[str(id)]
- var rect=Rect2(at,Vector2(size,size))
- if back:
-  rect.position.x+=size
-  rect.size.x=-size
- draw_texture_rect(texture,rect,false,Color(1,1,1,alpha))
- # Legacy-only sprites get an animated holographic augmentation layer.
+ draw_set_transform(at+Vector2(size if back else 0,0),0,Vector2(-1 if back else 1,1))
+ draw_texture_rect(texture,Rect2(Vector2.ZERO,Vector2(size,size)),false,Color(1,1,1,alpha))
+ draw_set_transform(Vector2.ZERO,0,Vector2.ONE)
+ # Six illustrated bases receive bespoke animated mechanical parts.
  if id in native_augmented: draw_cyber_overlay(id,at,size,back,alpha)
 
 func draw_cyber_overlay(id:int,at:Vector2,size:float,back:bool,alpha:float):
@@ -406,22 +420,22 @@ func draw_title():
 
 func draw_starter():
  draw_skyline(Rect2(0,0,960,720))
- box(Rect2(0,0,960,720),Color(0.02,.03,.08,.75))
- label_at("OAK INDUSTRIES / PROTOCOLO DE VÍNCULO",Vector2(46,58),15,CYAN)
- label_at("Elige tu primer compañero.",Vector2(46,108),36)
- label_at("Tres especies. Tres maneras de reescribir el futuro.",Vector2(46,148),19,Color("9daec5"))
- for i in range(3):
-  var id=[1,4,7][i]
-  var x=46+i*300
-  var accent=[Color("91e6ad"),Color("ff9d70"),CYAN][i]
-  panel(Rect2(x,189,270,409),Color("142135"),accent.darkened(.4))
-  glow(Vector2(x+135,332),87,accent,.08)
-  sprite(id,Vector2(x+10,210+sin(clock*2+i)*3),250)
-  label_at(SPECIES[id][0],Vector2(x+19,468),24)
-  label_at(catalog.get(id,{}).get("concept",""),Vector2(x+19,497),17,accent)
-  label_at("NIVEL 5 → 8 → 12",Vector2(x+19,527),13,Color("8fa7c0"))
-  button(Rect2(x+18,547,234,36),"VINCULAR   ["+str(i+1)+"]","starter:"+str(id))
- label_at("Cada forma posee una voz sintética propia y mejoras cibernéticas distintas.",Vector2(46,653),17,Color("9daec5"))
+ box(Rect2(0,0,960,720),Color(.02,.03,.08,.8))
+ label_at("ARCHIVO OAK / CUATRO VIDAS FUERA DE LA RED",Vector2(34,57),14,CYAN)
+ label_at("¿Con quién vas a cambiar el futuro?",Vector2(34,105),32)
+ label_at("Tu aventura comienza aquí. Escoge a tu primer compañero.",Vector2(34,147),18,Color("9daec5"))
+ for i in range(4):
+  var id=[1,4,7,25][i]
+  var x=34+i*225
+  var accent=[Color("91e6ad"),Color("ff9d70"),CYAN,Color("ffe279")][i]
+  panel(Rect2(x,192,217,405),Color("142135"),accent.darkened(.4))
+  glow(Vector2(x+108,319),78,accent,.08)
+  sprite(id,Vector2(x+6,218+sin(clock*2+i)*3),205)
+  label_at(SPECIES[id][0],Vector2(x+14,463),23)
+  label_at(["PLANTA / VENENO","FUEGO","AGUA","ELÉCTRICO"][i],Vector2(x+14,494),13,accent)
+  label_at("RAICHU · NIVEL 10" if id==25 else "EVOLUCIÓN · 8 / 12",Vector2(x+14,525),12,Color("a5b9ce"))
+  button(Rect2(x+12,546,193,36),"ELEGIR  ["+str(i+1)+"]","starter:"+str(id))
+ paragraph("Cada compañero comienza en nivel 5, tiene su propia voz y puede evolucionar. Todos pueden completar la aventura.",Vector2(34,642),880,18,Color("a5b9ce"))
 
 func draw_world():
  var names=["NEO PALETA","CORREDOR DE DATOS","DISTRITO CROMO"]
@@ -693,6 +707,7 @@ func draw_party():
    else: label_at("Evolución disponible: Nv. "+str(EV_LEVEL[id]),Vector2(x+118,y+121),13,Color("8ca4bd"))
   else: label_at("CONFIGURACIÓN FINAL",Vector2(x+118,y+121),12,PINK)
  button(Rect2(54,627,290,35),"SIMULADOR +1 NIVEL / ₽80","train")
+ button(Rect2(655,627,249,35),"CAJA DIGITAL","archive")
  label_at("Entrena al líder · saldo ₽"+str(money),Vector2(362,650),15,Color("91abc3"))
 
 func draw_dex():
@@ -775,13 +790,17 @@ func status_panel(r:Rect2,p:Dictionary,own:bool):
 
 func draw_battle():
  draw_skyline(Rect2(0,0,960,490))
+ for y in range(290,490):
+  draw_line(Vector2(0,y),Vector2(960,y),Color("13283a").lerp(Color("0c1729"),float(y-290)/200),1)
  for i in range(12):
   var y=300+i*i*1.4
   draw_line(Vector2(0,y),Vector2(960,y),Color("244054"),1)
  for i in range(13): draw_line(Vector2(480+(i-6)*27,280),Vector2(480+(i-6)*170,490),Color("244054"),1)
  ellipse_shape(Vector2(716,291),Vector2(178,37),Color("13354a"))
- draw_arc(Vector2(716,287),132,0,TAU,64,CYAN.darkened(.4),1)
+ ellipse_shape(Vector2(716,291),Vector2(167,30),Color("1b4557"))
+ ellipse_shape(Vector2(716,291),Vector2(71,13),Color(0,0,0,.5))
  ellipse_shape(Vector2(238,455),Vector2(192,31),Color("213247"))
+ ellipse_shape(Vector2(238,455),Vector2(88,15),Color(0,0,0,.5))
  glow(Vector2(720,237),99,CYAN,.025)
  glow(Vector2(235,380),103,PINK,.02)
  draw_battle_pokemon()
@@ -792,15 +811,25 @@ func draw_battle():
  label_at("COMBATE / "+("SEÑAL SALVAJE" if trainer=="" else trainer),Vector2(30,32),15,CYAN)
  box(Rect2(0,490,960,230),Color("0a1425"))
  panel(Rect2(24,511,464,181),Color("122239"),Color("385972"))
- paragraph(battle_text,Vector2(44,548),419,20,WHITE)
+ var display_text=battle_text
+ if battle_menu=="moves" and not turn_locked:
+  display_text="Elige una técnica. La criatura más veloz actúa primero.\nPasa el cursor sobre un movimiento para ver su efecto."
+  for i in range(4):
+   if Rect2(510,508+i*39,425,35).has_point(get_global_mouse_position()):
+    var move=move_set(party[active])[i]
+    var effects={"guard":"Aumenta el blindaje hasta dos cargas. Se pierde al cambiar.","weaken":"Reduce la potencia rival hasta dos cargas.","burn":"Quema: daño al final del turno y menor ataque físico.","sleep":"Duerme al rival durante dos acciones.","paralysis":"Reduce Velocidad y puede impedir actuar.","":"Daño "+("especial" if move.special else "físico")+". Potencia "+str(move.power)+"."}
+    display_text=move.name+" / "+move.type+"\nPrecisión: "+str(move.accuracy)+"%\n"+effects[move.effect]
+ paragraph(display_text,Vector2(44,548),419,18,WHITE)
  if turn_locked:
   for i in range(3): draw_circle(Vector2(677+i*22,600+sin(clock*6+i)*4),3,CYAN)
   return
  if battle_menu=="moves":
-  var move=MOVES[SPECIES[int(party[active].id)][1]]
-  button(Rect2(510,513,425,49),"1  PLACAJE / CINÉTICO","attack")
-  button(Rect2(510,575,425,49),"2  "+move[0]+" / "+move[1],"special")
-  button(Rect2(510,637,425,49),"3  VOLVER","battle_back")
+  var moves=move_set(party[active])
+  for i in range(4):
+   var m=moves[i]
+   var caption=str(i+1)+"  "+m.name+"   "+str(party[active].pp[i])+"/"+str(m.max_pp)+" PP  "+str(m.accuracy)+"%"
+   button(Rect2(510,508+i*39,425,35),caption,"move:"+str(i))
+  button(Rect2(510,668,425,27),"5  VOLVER","battle_back")
  elif battle_menu=="switch":
   for i in range(party.size()): button(Rect2(510,509+i*29,425,26),str(i+1)+"  "+SPECIES[int(party[i].id)][0]+" · "+str(party[i].hp)+" PS","switch:"+str(i))
   label_at("Esc: volver",Vector2(800,708),12,CYAN)
@@ -831,6 +860,7 @@ func draw_attack_effects():
 
 func test_cyber():
  assert(SPECIES.size()==20 and voices.size()==20 and catalog.size()==20)
+ assert(native_augmented.size()==6 and 6 in native_augmented and 137 in native_augmented)
  for id in SPECIES:
   assert(sprites.has(str(id)),"Missing sprite "+str(id))
   assert(voices[id]!=null and voices[id].get_length()>0.5)
@@ -900,8 +930,8 @@ func enemy_turn():
 
 func draw_battle_pokemon():
  var t = fx_progress()
- var enemy_offset = Vector2(0,sin(clock*2.5)*3)
- var own_offset = Vector2(0,sin(clock*2.0)*2)
+ var enemy_offset = Vector2.ZERO
+ var own_offset = Vector2.ZERO
  var enemy_alpha = 1.0
  var own_alpha = 1.0
  if t>=0 and t<=1:
@@ -923,8 +953,8 @@ func draw_battle_pokemon():
    else:
     own_offset.x += shake
     own_alpha = blink
- sprite(int(enemy.id),Vector2(593,86)+enemy_offset,265,false,enemy_alpha)
- sprite(int(party[active].id),Vector2(69,204)+own_offset,282,true,own_alpha)
+ sprite(int(enemy.id),ground_origin(int(enemy.id),Vector2(716,291),238,false)+enemy_offset,238,false,enemy_alpha)
+ sprite(int(party[active].id),ground_origin(int(party[active].id),Vector2(238,455),282,true)+own_offset,282,true,own_alpha)
 
 
 func _exit_tree():

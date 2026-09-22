@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/presentation/interior_world.gd" id="1"]
+[node name="InteriorViewport" type="SubViewport"]
+size = Vector2i(1280, 696)
+own_world_3d = true
+render_target_update_mode = 4
+msaa_3d = 2
+script = ExtResource("1")
+room_id = "archive"

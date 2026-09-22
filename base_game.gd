@@ -1,5 +1,6 @@
 extends Node2D
 
+const CombatRules = preload("res://scripts/combat/combat_rules.gd")
 const SAVE = "user://neon_kanto_v3.json"
 const INK = Color("192e43")
 const WHITE = Color("f5f4df")
@@ -67,6 +68,11 @@ var battle_text = ""
 var turn_locked = false
 var battle_end = false
 var battle_menu = "main"
+var selected_move = -1
+var enemy_acted_first = false
+var special_damage = false
+var last_critical = false
+var battle_participants: Array = []
 var attack_fx = {}
 var enemy_hp_visual = 0.0
 var player_hp_visual = 0.0
@@ -141,10 +147,10 @@ func _process(delta):
    oscillator.push_frame(Vector2(amp, amp))
  if mode == "world" and step_cool <= 0:
   var dir = Vector2i.ZERO
-  if Input.is_physical_key_pressed(KEY_UP) or Input.is_physical_key_pressed(KEY_W): dir = Vector2i.UP
-  elif Input.is_physical_key_pressed(KEY_DOWN) or Input.is_physical_key_pressed(KEY_S): dir = Vector2i.DOWN
-  elif Input.is_physical_key_pressed(KEY_LEFT) or Input.is_physical_key_pressed(KEY_A): dir = Vector2i.LEFT
-  elif Input.is_physical_key_pressed(KEY_RIGHT) or Input.is_physical_key_pressed(KEY_D): dir = Vector2i.RIGHT
+  if Input.is_action_pressed("move_north"): dir = Vector2i.UP
+  elif Input.is_action_pressed("move_south"): dir = Vector2i.DOWN
+  elif Input.is_action_pressed("move_west"): dir = Vector2i.LEFT
+  elif Input.is_action_pressed("move_east"): dir = Vector2i.RIGHT
   if dir != Vector2i.ZERO: move_player(dir)
  queue_redraw()
 
@@ -176,7 +182,9 @@ func _unhandled_input(event):
 
 func mon(id: int, level: int) -> Dictionary:
  var hp = int(SPECIES[id][2] * 2 * level / 100.0) + level + 10
- return {"id": id, "level": level, "hp": hp, "maxhp": hp, "xp": 0}
+ var result={"id": id, "level": level, "hp": hp, "maxhp": hp, "xp": 0}
+ CombatRules.normalize(result,SPECIES[id][1])
+ return result
 
 func reset_game():
  zone = 0
@@ -241,6 +249,14 @@ func action(a: String):
   use_potion(int(a.split(":")[1]))
  elif mode == "battle" and not turn_locked:
   if a == "fight": battle_menu = "moves"
+  elif a.begins_with("move:"):
+   var slot=int(a.get_slice(":",1))
+   if slot<0 or slot>3: return
+   if party[active].pp[slot]<=0 and not all_pp_empty(party[active]):
+    battle_text="Ese movimiento no tiene PP. Usa otro o recupera al equipo en la clínica."
+    return
+   selected_move=slot
+   player_attack(slot==1)
   elif a == "attack": player_attack(false)
   elif a == "special": player_attack(true)
   elif a == "catch": catch_mon()
@@ -353,7 +369,11 @@ func interact():
  toast("Acércate a una puerta o a una persona y pulsa E.")
 
 func heal_party():
- for p in party: p.hp = p.maxhp
+ for p in party:
+  p.hp = p.maxhp
+  p["status"]=""
+  p["sleep_turns"]=0
+  p["pp"]=move_set(p).map(func(m):return m.max_pp)
 
 func use_potion(i: int) -> bool:
  if potions <= 0:
@@ -379,6 +399,13 @@ func start_battle(wild: Dictionary, opponent = ""):
   return
  if party[active].hp <= 0: active = first_living()
  enemy = wild
+ battle_participants=[active]
+ for p in party+[enemy]:
+  CombatRules.normalize(p,SPECIES[int(p.id)][1])
+  p["guard"]=0
+  p["weaken"]=0
+ selected_move=-1
+ enemy_acted_first=false
  attack_fx = {}
  enemy_hp_visual = float(enemy.hp)
  player_hp_visual = float(party[active].hp)
@@ -405,70 +432,160 @@ func type_factor(attack_type: String, defender: String) -> float:
  if attack_type == "ELÉCTRICO" and defender == "ROCA": return 0.0
  return 1.0
 
+func combat_name(p: Dictionary) -> String:
+ return SPECIES[int(p.id)][0]
+
+func move_set(p:Dictionary)->Array:
+ return CombatRules.moves(int(p.id),SPECIES[int(p.id)][1],int(p.level))
+
+func all_pp_empty(p:Dictionary)->bool:
+ return p.pp.all(func(value):return int(value)<=0)
+
 func damage(attacker: Dictionary, defender: Dictionary, power: int, kind: String) -> int:
- var a = SPECIES[int(attacker.id)]
- var d = SPECIES[int(defender.id)]
- var attack = a[3] * 2.0 * attacker.level / 100 + 5
- var defense = d[4] * 2.0 * defender.level / 100 + 5
- var factor = type_factor(kind,d[1])
- if factor == 0: return 0
- return maxi(1,int(((2.0 * attacker.level / 5 + 2) * power * attack / defense / 50 + 2) * factor * randf_range(0.85,1.0)))
+ var a=SPECIES[int(attacker.id)]
+ var d=SPECIES[int(defender.id)]
+ var attack=CombatRules.stat(CombatRules.SPECIAL[int(attacker.id)] if special_damage else a[3],int(attacker.level))
+ var defense=CombatRules.stat(CombatRules.SPECIAL_DEF[int(defender.id)] if special_damage else d[4],int(defender.level))
+ last_critical=false
+ var factor=type_factor(kind,d[1])
+ if factor==0: return 0
+ last_critical=randf()<.0625
+ var modifier=(1.5 if last_critical else 1.0)*(1.5 if kind==a[1] else 1.0)*pow(2.0/3.0,int(attacker.get("weaken",0)))*pow(2.0/3.0,int(defender.get("guard",0)))
+ if attacker.get("status","")=="burn" and not special_damage: modifier*=.5
+ return maxi(1,int(((2.0*attacker.level/5+2)*power*attack/maxf(1,defense)/50+2)*factor*modifier*randf_range(.85,1.0)))
+
+func allowed_to_act(p:Dictionary)->bool:
+ if p.get("status","")=="sleep":
+  p.sleep_turns=maxi(0,int(p.sleep_turns)-1)
+  if p.sleep_turns==0:
+   p.status=""
+   return true
+  battle_text=combat_name(p)+" está dormido."
+  return false
+ if p.get("status","")=="paralysis" and randf()<.25:
+  battle_text=combat_name(p)+" no puede moverse por la parálisis."
+  return false
+ return true
+
+func perform_move(attacker:Dictionary,defender:Dictionary,slot:int,own:bool):
+ if not allowed_to_act(attacker):
+  await get_tree().create_timer(.6).timeout
+  return
+ var struggle=all_pp_empty(attacker)
+ var move=CombatRules.move_data("FORCEJEO","NORMAL",35,1,100) if struggle else move_set(attacker)[slot]
+ if not struggle:
+  if int(attacker.pp[slot])<=0: return
+  attacker.pp[slot]-=1
+ battle_text=combat_name(attacker)+" usa "+move.name+"."
+ attack_fx={"start":clock,"kind":move.type,"own":own,"duration":.85}
+ beep(330 if own else 180,.12)
+ if randi_range(1,100)>int(move.accuracy):
+  battle_text+="\n¡El ataque falló!"
+  await get_tree().create_timer(.85).timeout
+  return
+ await get_tree().create_timer(.35).timeout
+ if int(move.power)>0:
+  special_damage=bool(move.special)
+  var hit=damage(attacker,defender,int(move.power),move.type)
+  special_damage=false
+  defender.hp=maxi(0,int(defender.hp)-hit)
+  battle_text+=" −"+str(hit)+" PS"
+  if last_critical: battle_text+=" · ¡CRÍTICO!"
+  var factor=type_factor(move.type,SPECIES[int(defender.id)][1])
+  if factor==0: battle_text+="\nNo tiene efecto."
+  elif factor>1: battle_text+="\n¡Muy eficaz!"
+  elif factor<1: battle_text+="\nPoco eficaz."
+ elif move.effect=="guard":
+  attacker["guard"]=mini(2,int(attacker.get("guard",0))+1)
+  battle_text+="\nBlindaje reforzado (máximo 2 cargas)."
+ elif move.effect=="weaken":
+  defender["weaken"]=mini(2,int(defender.get("weaken",0))+1)
+  battle_text+="\nPotencia rival reducida."
+ elif CombatRules.can_status(defender,move.effect,SPECIES[int(defender.id)][1]):
+  defender.status=move.effect
+  defender.sleep_turns=3 if move.effect=="sleep" else 0
+  battle_text+="\nEstado: "+CombatRules.STATUS_NAMES[move.effect]+"."
+ else: battle_text+="\nNo altera su estado actual."
+ if struggle:
+  attacker.hp=maxi(0,int(attacker.hp)-maxi(1,int(attacker.maxhp)/8))
+  battle_text+="\nForcejeo causa daño de retroceso."
+ await get_tree().create_timer(.5).timeout
+
+func residual_damage():
+ for p in [party[active],enemy]:
+  if p.hp>0 and p.get("status","")=="burn":
+   p.hp=maxi(0,int(p.hp)-maxi(1,int(p.maxhp)/8))
+   battle_text+="\n"+combat_name(p)+": daño térmico."
+
+func resolve_faints()->bool:
+ if not has_living():
+  end_battle()
+  heal_party()
+  zone=0
+  pos=Vector2i(13,12)
+  visual_pos=Vector2(pos)
+  money=maxi(0,money-100)
+  say("EQUIPO RECUPERADO\nLa clínica restableció tus PS, PP y estados. Perdiste hasta ₽100.")
+  return true
+ if enemy.hp<=0:
+  if party[active].hp<=0: active=first_living()
+  await win_battle()
+  return true
+ if party[active].hp<=0:
+  active=first_living()
+  if not active in battle_participants: battle_participants.append(active)
+  player_hp_visual=float(party[active].hp)
+  battle_text="¡Adelante, "+combat_name(party[active])+"!"
+ return false
 
 func player_attack(special: bool):
- turn_locked = true
- battle_menu = "main"
- var p = party[active]
- var move = MOVES[SPECIES[int(p.id)][1]] if special else ["PLACAJE","NORMAL",40]
- var hit = damage(p,enemy,move[2],move[1])
- attack_fx = {"start":clock, "kind":move[1], "own":true, "duration":0.95}
- enemy_flash = 0.0
- battle_text = SPECIES[int(p.id)][0] + " usa " + move[0] + ".  −" + str(hit) + " PS"
- var factor = type_factor(move[1],SPECIES[int(enemy.id)][1])
- if factor > 1: battle_text += "\n¡Es muy eficaz!"
- elif factor == 0: battle_text += "\nNo tiene efecto."
- elif factor < 1: battle_text += "\nNo es muy eficaz…"
- beep(330,0.16)
- await get_tree().create_timer(0.42).timeout
- enemy.hp = maxi(0,enemy.hp - hit)
- await get_tree().create_timer(0.63).timeout
- if enemy.hp <= 0: await win_battle()
+ turn_locked=true
+ battle_menu="main"
+ var slot=selected_move if selected_move>=0 else (1 if special else 0)
+ selected_move=-1
+ var original=party[active]
+ enemy_acted_first=CombatRules.speed(enemy)>CombatRules.speed(original)
+ if enemy_acted_first:
+  await enemy_turn()
+  if mode!="battle": return
+  turn_locked=true
+  if original.hp<=0:
+   residual_damage()
+   await resolve_faints()
+   turn_locked=false
+   enemy_acted_first=false
+   return
+ await perform_move(original,enemy,slot,true)
+ if await resolve_faints():
+  enemy_acted_first=false
+  return
+ if enemy_acted_first:
+  residual_damage()
+  await resolve_faints()
+  turn_locked=false
  else: await enemy_turn()
+ enemy_acted_first=false
 
 func enemy_turn():
- var move = MOVES[SPECIES[int(enemy.id)][1]] if randf() < 0.5 else ["PLACAJE","NORMAL",40]
- var hit = damage(enemy,party[active],move[2],move[1])
- battle_text = SPECIES[int(enemy.id)][0] + " usa " + move[0] + ".  −" + str(hit) + " PS"
- attack_fx = {"start":clock, "kind":move[1], "own":false, "duration":0.8}
- flash = 0.0
- beep(180,0.12)
- await get_tree().create_timer(0.36).timeout
- party[active].hp = maxi(0,party[active].hp - hit)
- await get_tree().create_timer(0.49).timeout
- if party[active].hp <= 0:
-  if has_living():
-   active = first_living()
-   battle_text = "¡Adelante, " + SPECIES[int(party[active].id)][0] + "!"
-  else:
-   end_battle()
-   heal_party()
-   zone = 0
-   pos = Vector2i(13,12)
-   visual_pos = Vector2(pos)
-   money = maxi(0,money-100)
-   say("TU EQUIPO NECESITA DESCANSAR\nVolviste a casa y recuperaste todos tus PS. Perdiste hasta ₽100. Puedes volver a intentarlo.")
- turn_locked = false
+ var options=[]
+ for i in range(4):
+  var move=move_set(enemy)[i]
+  if int(enemy.pp[i])<=0: continue
+  if move.effect=="guard" and int(enemy.get("guard",0))>=2: continue
+  if move.effect=="weaken" and int(party[active].get("weaken",0))>=2: continue
+  if move.effect in ["sleep","burn","paralysis"] and not CombatRules.can_status(party[active],move.effect,SPECIES[int(party[active].id)][1]): continue
+  options.append(i)
+ if options.is_empty():
+  for i in range(4):
+   if int(enemy.pp[i])>0: options.append(i)
+ var slot=0 if options.is_empty() else int(options.pick_random())
+ await perform_move(enemy,party[active],slot,false)
+ if not enemy_acted_first: residual_damage()
+ await resolve_faints()
+ turn_locked=false
 
 func win_battle():
- var reward = int(enemy.level) * 22
- var p = party[active]
- p.xp += reward
- battle_text = "¡" + SPECIES[int(enemy.id)][0] + " se debilitó!  +" + str(reward) + " EXP"
- while p.xp >= p.level * 12:
-  p.xp -= p.level * 12
-  p.level += 1
-  p.maxhp += 3
-  p.hp = mini(p.maxhp, p.hp + 6)
-  battle_text += "\n¡" + SPECIES[int(p.id)][0] + " sube al nivel " + str(p.level) + "!"
+ battle_text="¡"+combat_name(enemy)+" se debilitó!\n"+award_battle_experience()
  await get_tree().create_timer(1.3).timeout
  if has_method("evolve_after_victory"): await evolve_after_victory()
  if not trainer_queue.is_empty() and trainer != "":
@@ -531,8 +648,12 @@ func battle_potion():
   await enemy_turn()
 
 func switch_mon(i: int):
- if i == active or party[i].hp <= 0: return
- active = i
+ if i<0 or i>=party.size() or i==active or party[i].hp<=0: return
+ party[active]["guard"]=0
+ party[active]["weaken"]=0
+ active=i
+ if not i in battle_participants: battle_participants.append(i)
+ player_hp_visual=float(party[i].hp)
  battle_menu = "main"
  turn_locked = true
  battle_text = "¡Adelante, " + SPECIES[int(party[i].id)][0] + "!"
@@ -1338,3 +1459,26 @@ func evolve_after_victory():
 
 func accept_capture(p: Dictionary):
  party.append(p)
+
+func award_battle_experience()->String:
+ var participants=[]
+ for index in battle_participants:
+  if index>=0 and index<party.size() and party[index].hp>0 and not index in participants: participants.append(index)
+ if participants.is_empty(): participants=[active]
+ var reward=maxi(1,int(enemy.level)*22/participants.size())
+ var summary="+"+str(reward)+" EXP por participante."
+ for index in participants:
+  var creature=party[index]
+  var original_level=int(creature.level)
+  creature.xp+=reward
+  while creature.xp>=creature.level*12:
+   creature.xp-=creature.level*12
+   creature.level+=1
+   var new_hp=int(SPECIES[int(creature.id)][2]*2*creature.level/100.0)+creature.level+10
+   # Preserve HP earned under the legacy +3-per-level progression.
+   new_hp=maxi(new_hp,int(creature.maxhp)+1)
+   var increase=maxi(0,new_hp-int(creature.maxhp))
+   creature.maxhp=new_hp
+   creature.hp=mini(new_hp,int(creature.hp)+increase)
+  if creature.level>original_level: summary+="\n"+combat_name(creature)+" → Nv. "+str(creature.level)
+ return summary

@@ -4,139 +4,159 @@
     "name": "BULBASAUR",
     "type": "PLANTA",
     "concept": "Jardín de silicio",
-    "description": "Un bonsái fotónico crece dentro de su reactor de vidrio. Sus raíces reparan circuitos."
+    "description": "Un bonsái fotónico crece dentro de su reactor de vidrio. Sus raíces reparan circuitos.",
+    "memory": "Preserva a los Bulbasaur del bosque de Paleta, extinguidos por la primera lluvia ácida. Su núcleo aún orienta el bulbo hacia un sol que nunca conoció. El bonsái de silicio guarda la última semilla del bosque."
   },
   {
     "id": 2,
     "name": "IVYSAUR",
     "type": "PLANTA",
     "concept": "Loto antena",
-    "description": "Su capullo recibe señales de los jardines orbitales. Canaliza energía en sus prótesis."
+    "description": "Su capullo recibe señales de los jardines orbitales. Canaliza energía en sus prótesis.",
+    "memory": "Los Ivysaur protegieron los brotes bajo sus hojas hasta que el suelo dejó de sostener vida. Su loto antena conserva aquel gesto: se abre sobre cualquier compañero herido, incluso cuando no puede curarlo."
   },
   {
     "id": 3,
     "name": "VENUSAUR",
     "type": "PLANTA",
     "concept": "Arca botánica",
-    "description": "Sus pétalos solares alimentan un pequeño bosque. Purifica la lluvia ácida de la ciudad."
+    "description": "Sus pétalos solares alimentan un pequeño bosque. Purifica la lluvia ácida de la ciudad.",
+    "memory": "El último Venusaur murió filtrando agua para un refugio. Su flor sintética reconstruye ese bosque gota a gota. Oak encontró en su memoria el sonido de niños dormidos junto a sus raíces."
   },
   {
     "id": 4,
     "name": "CHARMANDER",
     "type": "FUEGO",
     "concept": "Chispa de plasma",
-    "description": "Una llama de plasma late en su cola transparente. Lleva un pequeño brazo de cromo."
+    "description": "Una llama de plasma late en su cola transparente. Lleva un pequeño brazo de cromo.",
+    "memory": "Los Charmander de la sierra desaparecieron al consumirse el oxígeno de sus cuevas. La brasa de plasma reproduce su último latido cálido. Se acerca a quienes tiemblan, aunque sus sensores no detecten frío."
   },
   {
     "id": 5,
     "name": "CHARMELEON",
     "type": "FUEGO",
     "concept": "Forja escarlata",
-    "description": "Sus aletas de cobre disipan el calor. Afila garras de luz en las fundiciones nocturnas."
+    "description": "Sus aletas de cobre disipan el calor. Afila garras de luz en las fundiciones nocturnas.",
+    "memory": "Un grupo de Charmeleon abrió una salida entre los escombros de la sierra; ninguno salió antes del derrumbe. Sus garras de luz recuerdan el movimiento. Ante una puerta cerrada, siempre busca a alguien detrás."
   },
   {
     "id": 6,
     "name": "CHARIZARD",
     "type": "FUEGO",
     "concept": "Ala de fotones",
-    "description": "Proyecta alas de energía entre costillas de titanio. Su reactor ilumina el cielo de Neón Kanto."
+    "description": "Proyecta alas de energía entre costillas de titanio. Su reactor ilumina el cielo de Neón Kanto.",
+    "memory": "Los Charizard cruzaron el humo llevando evacuados hasta que sus alas cedieron. Las membranas fotónicas de este núcleo reproducen una ruta de rescate inconclusa. Todavía mira al cielo cuando oye un tren."
   },
   {
     "id": 7,
     "name": "SQUIRTLE",
     "type": "AGUA",
     "concept": "Núcleo acuático",
-    "description": "Su caparazón es un acuario refrigerante. Dos turbinas reciclan cada gota de agua."
+    "description": "Su caparazón es un acuario refrigerante. Dos turbinas reciclan cada gota de agua.",
+    "memory": "Los Squirtle del estuario murieron al contaminarse la última corriente. Una muestra de aquella agua permanece sellada en su caparazón refrigerante. Comparte cada gota como si alguien aún esperara río abajo."
   },
   {
     "id": 8,
     "name": "WARTORTLE",
     "type": "AGUA",
     "concept": "Corriente espectral",
-    "description": "Su cola es una espiral de datos líquidos. Sus orejas cerámicas detectan fugas subterráneas."
+    "description": "Su cola es una espiral de datos líquidos. Sus orejas cerámicas detectan fugas subterráneas.",
+    "memory": "Los Wartortle conservaron huevos bajo sus cuerpos durante la marea tóxica. Su núcleo recuerda el peso de una vida pequeña. Las turbinas de su caparazón mantienen una temperatura que ya no necesita."
   },
   {
     "id": 9,
     "name": "BLASTOISE",
     "type": "AGUA",
     "concept": "Bastión hidráulico",
-    "description": "Dos cañones hidráulicos protegen los canales. Tubos de presión cian recorren su coraza."
+    "description": "Dos cañones hidráulicos protegen los canales. Tubos de presión cian recorren su coraza.",
+    "memory": "El último Blastoise agotó sus reservas apagando el refugio de la costa. La corrosión lo alcanzó al amanecer. Sus cañones reconstruidos pueden combatir, pero su primer impulso sigue siendo proteger una puerta."
   },
   {
     "id": 25,
     "name": "PIKACHU",
     "type": "ELÉCTRICO",
     "concept": "Pulso de cobre",
-    "description": "Almacena cargas en sus mejillas-capacitor. Su cola articulada puede reiniciar un barrio."
+    "description": "Almacena cargas en sus mejillas-capacitor. Su cola articulada puede reiniciar un barrio.",
+    "memory": "Los Pikachu desaparecieron cuando NEXUS drenó los bosques para alimentar sus silos. Sus mejillas almacenan hoy energía robada a esa misma red. El núcleo conserva la llamada de una familia que no responde."
   },
   {
     "id": 26,
     "name": "RAICHU",
     "type": "ELÉCTRICO",
     "concept": "Corona Tesla",
-    "description": "Su cola levita en segmentos unidos por arcos. Las orejas son bobinas de alta frecuencia."
+    "description": "Su cola levita en segmentos unidos por arcos. Las orejas son bobinas de alta frecuencia.",
+    "memory": "Un Raichu sostuvo la electricidad del hospital hasta que el pulso militar quemó su cuerpo. Sus nuevas bobinas conservan el ritmo de los respiradores. Nunca descarga toda su energía: guarda algo para otros."
   },
   {
     "id": 133,
     "name": "EEVEE",
     "type": "NORMAL",
     "concept": "Protocolo adaptable",
-    "description": "Fibras ópticas se mezclan con su pelaje. Su collar modular admite dos rutas de evolución."
+    "description": "Fibras ópticas se mezclan con su pelaje. Su collar modular admite dos rutas de evolución.",
+    "memory": "Los Eevee urbanos sobrevivieron al hambre, pero no al invierno tóxico. Este núcleo conserva varias rutas de adaptación. Elegir una evolución no borra las demás memorias: aprende a vivir con futuros perdidos."
   },
   {
     "id": 134,
     "name": "VAPOREON",
     "type": "AGUA",
     "concept": "Flujo holográfico",
-    "description": "Su cuerpo mezcla agua y luz. Atraviesa las tuberías como una corriente de datos."
+    "description": "Su cuerpo mezcla agua y luz. Atraviesa las tuberías como una corriente de datos.",
+    "memory": "Los Vaporeon se disolvieron en un mar que ya no podían purificar. Su memoria acuática se conserva en canales de vidrio. Cuando llueve, comprueba cada gota antes de permitir que toque a su compañero."
   },
   {
     "id": 135,
     "name": "JOLTEON",
     "type": "ELÉCTRICO",
     "concept": "Espina de voltaje",
-    "description": "Sus púas son cristales conductores. Cada paso deja una breve firma eléctrica."
+    "description": "Sus púas son cristales conductores. Cada paso deja una breve firma eléctrica.",
+    "memory": "Los Jolteon murieron durante la tormenta electromagnética que aisló los refugios. Sus púas sintéticas vuelven a escuchar entre frecuencias muertas. A veces responde con alegría a una señal que nadie más oye."
   },
   {
     "id": 92,
     "name": "GASTLY",
     "type": "FANTASMA",
     "concept": "Eco de red",
-    "description": "Una nube de píxeles envuelve su rostro. Se esconde en los anuncios averiados."
+    "description": "Una nube de píxeles envuelve su rostro. Se esconde en los anuncios averiados.",
+    "memory": "Los Gastly del viejo cementerio se dispersaron cuando los filtros militares purgaron la atmósfera. Sena capturó un último patrón espectral. Su núcleo conserva una risa; el archivo no recuerda de quién era."
   },
   {
     "id": 93,
     "name": "HAUNTER",
     "type": "FANTASMA",
     "concept": "Garra remota",
-    "description": "Sus manos mecánicas levitan sin cables. Disfruta alterando los letreros holográficos."
+    "description": "Sus manos mecánicas levitan sin cables. Disfruta alterando los letreros holográficos.",
+    "memory": "Los Haunter desaparecieron con los edificios que habitaban, barridos por el pulso de NEXUS. Sus manos articuladas imitan antiguos juegos. Buscan una pared atravesable y encuentran acero una y otra vez."
   },
   {
     "id": 94,
     "name": "GENGAR",
     "type": "FANTASMA",
     "concept": "Espectro de neón",
-    "description": "Un núcleo magenta flota en su torso holográfico. Su sonrisa aparece antes que su cuerpo."
+    "description": "Un núcleo magenta flota en su torso holográfico. Su sonrisa aparece antes que su cuerpo.",
+    "memory": "Un Gengar protegió un refugio ocultando su señal hasta que NEXUS borró el distrito. Su núcleo recuerda cada nombre, pero no sabe pronunciarlos. La sombra de su reactor se ensancha cuando alguien tiene miedo."
   },
   {
     "id": 123,
     "name": "SCYTHER",
     "type": "BICHO",
     "concept": "Filo de ion",
-    "description": "Sus guadañas de titanio brillan con plasma. Patrulla los invernaderos suspendidos."
+    "description": "Sus guadañas de titanio brillan con plasma. Patrulla los invernaderos suspendidos.",
+    "memory": "Los Scyther de los jardines orbitales murieron al cortarse el soporte vital. Sus guadañas guardan los patrones con que podaban árboles. El primer corte de cada mañana sigue dirigido a una rama imaginaria."
   },
   {
     "id": 212,
     "name": "SCIZOR",
     "type": "ACERO",
     "concept": "Pinza de asedio",
-    "description": "Su armadura de carbono carmesí resiste sobrecargas. Ajusta sus pinzas con servomotores."
+    "description": "Su armadura de carbono carmesí resiste sobrecargas. Ajusta sus pinzas con servomotores.",
+    "memory": "Los Scizor sellaron las grietas de los jardines orbitales hasta quedar atrapados fuera. Sus pinzas reconstruidas conservan marcas de aquellas juntas. Este núcleo no confunde una armadura con invulnerabilidad."
   },
   {
     "id": 137,
     "name": "PORYGON",
     "type": "NORMAL",
     "concept": "Origami cuántico",
-    "description": "Sus placas geométricas flotan alrededor de un núcleo. Nació en la primera red de la ciudad."
+    "description": "Sus placas geométricas flotan alrededor de un núcleo. Nació en la primera red de la ciudad.",
+    "memory": "Porygon fue fauna digital antes de la guerra. NEXUS purgó sus colonias para ocupar la red. Sena escondió este patrón en un archivo de semillas. Su cuerpo de polígonos es el refugio de una especie también borrada."
   }
 ]
