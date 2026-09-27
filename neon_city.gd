@@ -472,7 +472,8 @@ func test_city():
    var anchor=Vector2(238,455)
    var origin=ground_origin(id,anchor,282,mirrored)
    var pivot:Vector2=ground_pivots[id]
-   if mirrored: pivot.x=1.0-pivot.x
+   if mirrored and back_sprites.has(id): pivot=back_ground_pivots[id]
+   elif mirrored: pivot.x=1.0-pivot.x
    assert((origin+pivot*282).distance_to(anchor)<.01)
  # All nodes are reachable from district entrances, no decoration changes navigation.
  for z in range(3):

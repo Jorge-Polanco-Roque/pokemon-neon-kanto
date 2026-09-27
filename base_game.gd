@@ -67,6 +67,7 @@ var trainer_queue: Array = []
 var battle_text = ""
 var turn_locked = false
 var battle_end = false
+var battle_canvas_width=960.0
 var battle_menu = "main"
 var selected_move = -1
 var enemy_acted_first = false
@@ -93,6 +94,7 @@ var frequency = 440.0
 var muted = false
 
 func _ready():
+ texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
  randomize()
  for id in SPECIES:
   var path = "res://assets/creatures/"+str(id)+".png"
@@ -373,7 +375,7 @@ func heal_party():
   p.hp = p.maxhp
   p["status"]=""
   p["sleep_turns"]=0
-  p["pp"]=move_set(p).map(func(m):return m.max_pp)
+  CombatRules.restore_pp(p,SPECIES[int(p.id)][1])
 
 func use_potion(i: int) -> bool:
  if potions <= 0:
@@ -436,7 +438,7 @@ func combat_name(p: Dictionary) -> String:
  return SPECIES[int(p.id)][0]
 
 func move_set(p:Dictionary)->Array:
- return CombatRules.moves(int(p.id),SPECIES[int(p.id)][1],int(p.level))
+ return CombatRules.equipped_moves(p,SPECIES[int(p.id)][1])
 
 func all_pp_empty(p:Dictionary)->bool:
  return p.pp.all(func(value):return int(value)<=0)
@@ -495,6 +497,8 @@ func perform_move(attacker:Dictionary,defender:Dictionary,slot:int,own:bool):
   if factor==0: battle_text+="\nNo tiene efecto."
   elif factor>1: battle_text+="\n¡Muy eficaz!"
   elif factor<1: battle_text+="\nPoco eficaz."
+  if factor>0 and int(move.chance)>0 and CombatRules.apply_secondary(defender,move,SPECIES[int(defender.id)][1],randi_range(1,100)):
+   battle_text+="\n"+("Potencia rival reducida." if move.effect=="weaken" else "Estado: "+CombatRules.STATUS_NAMES[move.effect]+".")
  elif move.effect=="guard":
   attacker["guard"]=mini(2,int(attacker.get("guard",0))+1)
   battle_text+="\nBlindaje reforzado (máximo 2 cargas)."
@@ -1367,8 +1371,8 @@ func draw_attack_effects():
  if t<0 or t>1: return
  var own = attack_fx.own
  var kind = attack_fx.kind
- var source = Vector2(260,343) if own else Vector2(706,201)
- var target = Vector2(713,216) if own else Vector2(235,365)
+ var source = battle_point(Vector2(260,343) if own else Vector2(706,201))
+ var target = battle_point(Vector2(713,216) if own else Vector2(235,365))
  var travel = clampf(t/0.48,0,1)
  var center = source.lerp(target,travel)
  var impact = clampf((t-0.43)/0.57,0,1)
@@ -1480,5 +1484,9 @@ func award_battle_experience()->String:
    var increase=maxi(0,new_hp-int(creature.maxhp))
    creature.maxhp=new_hp
    creature.hp=mini(new_hp,int(creature.hp)+increase)
+  CombatRules.normalize(creature,SPECIES[int(creature.id)][1])
   if creature.level>original_level: summary+="\n"+combat_name(creature)+" → Nv. "+str(creature.level)
  return summary
+
+func battle_point(point:Vector2)->Vector2:
+ return Vector2(point.x*battle_canvas_width/960.0,point.y)

@@ -14,11 +14,13 @@ var vehicles: Array = []
 var markers = {}
 var focus=Vector3(13.5,0,9)
 var elapsed=0.0
+var field_rotors:Array=[]
 var scene_key=""
 var prologue_mode=false
 var prologue_act=0
 var accent=Color("5bd9df")
 var simulation_enabled=true
+var reduced_motion=false
 var atmosphere: Environment
 var companion_grid: AStarGrid2D
 var companion_path: Array = []
@@ -171,6 +173,7 @@ func begin_build(key:String):
  visitors=[]
  vehicles=[]
  markers={}
+ field_rotors=[]
  batches={}
 
 func set_corruption(value:int):
@@ -233,7 +236,7 @@ func tower(at:Vector3,dimensions:Vector3,variant:int):
    if (xx+floor_index+variant)%4==0: continue
    box(at+Vector3((xx-1.5)*.57,-dimensions.y/2+.45+floor_index*.8,dimensions.z/2+.015),Vector3(.28,.32,.035),Color("bd9770") if (xx+variant)%3==0 else Color("427d89"),true)
 
-func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:Array,npc_cell:Vector2i):
+func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:Array,npc_cell:Vector2i,restored:Array=[]):
  var key="district:"+str(index)
  if scene_key==key: return
  begin_build(key)
@@ -310,6 +313,7 @@ func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:
   for i in range(3): stall(Vector3(19+i*2.5,0,13),i)
   text_sign("CROMO / EL AIRE SE PAGA",Vector3(14,3,1),accent,33)
  for i in range(2): vehicle(Vector3(10+i*7,3.4+i*.3,10),false)
+ build_relief_site(index,index in restored)
  npc.set_pose(Vector3(npc_cell.x+.5,0,npc_cell.y+.5),Vector2.DOWN,false)
  add_visitor([Vector3(13.2,0,3),Vector3(13.2,0,12),Vector3(14.6,0,12),Vector3(14.6,0,3)],Color("a47d5d"))
  add_visitor([Vector3(11,0,8.7),Vector3(16.5,0,8.7),Vector3(16.5,0,9.3),Vector3(11,0,9.3)],Color("487b89"))
@@ -482,10 +486,12 @@ func sync_player(cell:Vector2,direction:Vector2,moving:bool):
 
 func update_camera(delta:float):
  var desired=focus+Vector3(8,17,19)
- camera.position=camera.position.lerp(desired,1.0-exp(-delta*5))
+ camera.position=desired if reduced_motion else camera.position.lerp(desired,1.0-exp(-delta*5))
  camera.look_at(focus+Vector3(0,0,-1.1),Vector3.UP)
 
 func _process(delta):
+ if simulation_enabled and not reduced_motion:
+  for rotor in field_rotors: rotor.rotate_y(delta*.8)
  if not is_instance_valid(camera) or not simulation_enabled: return
  elapsed+=delta
  if partner.visible and not partner.navigating and not companion_path.is_empty():
@@ -499,5 +505,39 @@ func _process(delta):
    if target.distance_to(player.position)<.7: continue
    actor.navigate_to(target)
    visitor.next=(visitor.next+1)%visitor.route.size()
+ for child in district_root.get_children():
+  if child is CPUParticles3D: child.emitting=not reduced_motion
  for transport in vehicles:
+  if reduced_motion: continue
   transport.node.position=transport.base+Vector3(sin(elapsed*.22)*3.0 if transport.train else sin(elapsed*.3)*6,0 if transport.train else sin(elapsed)*.08,0)
+
+func build_relief_site(index:int,online:bool):
+ var site=preload("res://scripts/combat/field_protocols.gd").SITES[index]
+ var q=Vector3(site.cell.x+.5,0,site.cell.y+.5)
+ var signal_color=Color("6cf5b7") if online else Color("ffbd70")
+ box(q+Vector3(0,.09,0),Vector3(.92,.18,.92),Color("253b4d"))
+ for side in [-1,1]:
+  box(q+Vector3(side*.41,.20,0),Vector3(.035,.07,.78),signal_color,true)
+ if index==0:
+  cylinder(q+Vector3(0,.65,0),.34,1.05,Color("365d6a"))
+  for y in [.24,.55,.91,1.19]: cylinder(q+Vector3(0,y,0),.37,.055,signal_color,online)
+  cylinder(q+Vector3(0,1.34,0),.16,.25,Color("7e9aab"))
+  box(q+Vector3(0,.77,.34),Vector3(.35,.40,.08),Color("091b2b"))
+  box(q+Vector3(0,.77,.39),Vector3(.25,.22,.025),signal_color,true)
+ elif index==1:
+  for x in [-.24,.24]:
+   box(q+Vector3(x,.49,0),Vector3(.40,.57,.64),Color("677882"))
+   box(q+Vector3(x,.50,.33),Vector3(.30,.08,.035),signal_color,true)
+  if not online:
+   box(q+Vector3(0,.62,.36),Vector3(.9,.08,.06),Color("ec8a65"),true)
+  else:
+   cylinder(q+Vector3(0,1.05,0),.20,.09,signal_color,true)
+ else:
+  box(q+Vector3(0,.70,0),Vector3(.45,1.1,.44),Color("40536c"))
+  cylinder(q+Vector3(0,1.49,0),.05,.63,Color("a0b4c6"))
+  var dish=cylinder(q+Vector3(0,1.84,0),.39,.09,signal_color,online)
+  dish.rotation_degrees.x=35
+  if online: field_rotors.append(dish)
+  for y in [.40,.63,.86]: box(q+Vector3(0,y,.23),Vector3(.31,.04,.02),signal_color,true)
+ text_sign(("AUXILIO / ACTIVO" if online else "AUXILIO / E"),q+Vector3(0,2.13,0),signal_color,20)
+ light(q+Vector3(0,1.3,.6),signal_color,.6 if online else .3,2.0)

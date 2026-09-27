@@ -1,0 +1,150 @@
+{
+  "tool": "image_gen.imagegen",
+  "creatures": [
+    {
+      "id": 1,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/1.png",
+      "prompt": "Use case: stylized-concept. Create a single full-body REAR VIEW game battle sprite of the cybernetic Bulbasaur in the reference. Preserve exactly its turquoise skin, glass terrarium containing pink bonsai, brass mechanical front leg, cyan glowing optic vines and premium cel-shaded illustration style. Camera behind the creature, three-quarter rear, its head and body facing away toward upper RIGHT. Show the back of its head and rear legs, rear glass dome and root machinery. No front-facing eyes or face looking at camera. All feet and vines fully visible, 10 percent padding. True transparent RGBA background, no floor, no cast shadow, no text or UI. One character only; intended as the player's back-facing Pokemon in turn based battles."
+    },
+    {
+      "id": 2,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. Create a single full-body REAR VIEW game battle sprite of the cybernetic Ivysaur in the reference. Preserve its recognizable proportions, exact armor, colors, mechanical limbs, botanical or plasma parts and polished cel-shaded illustration style. Camera BEHIND the creature, rear three-quarter view, entire body and head facing away toward upper RIGHT, showing back of head, shoulders, rear feet, back armor and tail. Do not turn its face toward viewer. All appendages inside canvas, ten percent transparent padding. True transparent RGBA background; no floor, no cast shadow, no labels or UI. One character only, consistent with the supplied front sprite, for the player's Pokemon in a turn based battle.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 1c9d952f-5211-4407-b2d7-7f35158beae6.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 3,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/3.png",
+      "prompt": "Use case: stylized-concept. Create a single full-body REAR VIEW game battle sprite of the cybernetic Venusaur in the reference. Preserve its recognizable proportions, exact armor, colors, mechanical limbs, botanical or plasma parts and polished cel-shaded illustration style. Camera BEHIND the creature, rear three-quarter view, entire body and head facing away toward upper RIGHT, showing back of head, shoulders, rear feet, back armor and tail. Do not turn its face toward viewer. All appendages inside canvas, ten percent transparent padding. True transparent RGBA background; no floor, no cast shadow, no labels or UI. One character only, consistent with the supplied front sprite, for the player's Pokemon in a turn based battle."
+    },
+    {
+      "id": 4,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. Create a single full-body REAR VIEW game battle sprite of the cybernetic Charmander in the reference. Preserve its recognizable proportions, exact armor, colors, mechanical limbs, botanical or plasma parts and polished cel-shaded illustration style. Camera BEHIND the creature, rear three-quarter view, entire body and head facing away toward upper RIGHT, showing back of head, shoulders, rear feet, back armor and tail. Do not turn its face toward viewer. All appendages inside canvas, ten percent transparent padding. True transparent RGBA background; no floor, no cast shadow, no labels or UI. One character only, consistent with the supplied front sprite, for the player's Pokemon in a turn based battle.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 6a64e92b-d10c-4391-bac1-4f3e2b8a647c.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 5,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/5.png",
+      "prompt": "Use case: stylized-concept. Create a single full-body REAR VIEW game battle sprite of the cybernetic Charmeleon in the reference. Preserve its recognizable proportions, exact armor, colors, mechanical limbs, botanical or plasma parts and polished cel-shaded illustration style. Camera BEHIND the creature, rear three-quarter view, entire body and head facing away toward upper RIGHT, showing back of head, shoulders, rear feet, back armor and tail. Do not turn its face toward viewer. All appendages inside canvas, ten percent transparent padding. True transparent RGBA background; no floor, no cast shadow, no labels or UI. One character only, consistent with the supplied front sprite, for the player's Pokemon in a turn based battle."
+    },
+    {
+      "id": 6,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/6.png",
+      "prompt": "Use case: stylized-concept. A single full-body REAR VIEW battle sprite of Charizard, using the reference creature's identity, silhouette, proportions and colors. Add integrated cybernetic wing frames, cyan translucent wing membranes, titanium joints and a back-mounted cyan reactor consistent with the game's cyberpunk theme. Camera BEHIND the creature, three-quarter rear, body and head facing away toward upper RIGHT. Show the back of the head and body, rear feet, tail and back machinery, not a front-facing character. Preserve all appendages inside a square canvas with 10% transparent margin. True transparent RGBA background, no scenery, no floor, no cast shadow, no text. One character only."
+    },
+    {
+      "id": 7,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/7.png",
+      "prompt": "Use case: stylized-concept. A single full-body REAR VIEW battle sprite of Squirtle, using the reference creature's identity, silhouette, proportions and colors. Preserve the transparent coolant shell, turbine mechanisms and cybernetic fins exactly. Camera BEHIND the creature, three-quarter rear, body and head facing away toward upper RIGHT. Show the back of the head and body, rear feet, tail and back machinery, not a front-facing character. Preserve all appendages inside a square canvas with 10% transparent margin. True transparent RGBA background, no scenery, no floor, no cast shadow, no text. One character only."
+    },
+    {
+      "id": 8,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/8.png",
+      "prompt": "Use case: stylized-concept. A single full-body REAR VIEW battle sprite of Wartortle, using the reference creature's identity, silhouette, proportions and colors. Preserve the shell turbines, luminous fluid tail and mechanical ear fins. Camera BEHIND the creature, three-quarter rear, body and head facing away toward upper RIGHT. Show the back of the head and body, rear feet, tail and back machinery, not a front-facing character. Preserve all appendages inside a square canvas with 10% transparent margin. True transparent RGBA background, no scenery, no floor, no cast shadow, no text. One character only."
+    },
+    {
+      "id": 9,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. A single full-body REAR VIEW battle sprite of Blastoise, using the reference creature's identity, silhouette, proportions and colors. Integrate cybernetic twin coolant cannons, titanium shell rim and glass cooling tubes into its rear shell, polished cel-shaded cyberpunk illustration. Camera BEHIND the creature, three-quarter rear, body and head facing away toward upper RIGHT. Show the back of the head and body, rear feet, tail and back machinery, not a front-facing character. Preserve all appendages inside a square canvas with 10% transparent margin. True transparent RGBA background, no scenery, no floor, no cast shadow, no text. One character only.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 5b6b31d5-2035-4ab1-b3e5-aa233d0a89f3.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 25,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. Single full-body REAR VIEW battle sprite of Pikachu using this reference. Golden yellow ceramic armor integrated into recognizable Pikachu body, black-tipped ears, subtle cyan ear circuits, titanium ankle cuffs, brown back stripes and segmented lightning-bolt tail with cyan glass energy core, premium polished cel shaded illustrated cyberpunk style. Camera behind the creature, rear three-quarter view, head and body looking away toward upper RIGHT. Show the back of its head, spine, rear legs, tail and mechanical back details, no face turned toward viewer. Full silhouette with all extremities inside frame and 10 percent transparent padding. True transparent RGBA background, no floor, no ground shadow, no labels, no scenery. One character only.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 3a2c9a72-a162-46d5-981c-a218c4596e81.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 26,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. Single full-body REAR VIEW battle sprite of Raichu using this reference. Preserve orange fur, curved ears, brown rear stripes and long cable-like tail with lightning tip; integrate copper induction coils and cyan ceramic back armor in a polished cel-shaded cyberpunk illustration. Camera behind the creature, rear three-quarter view, head and body looking away toward upper RIGHT. Show the back of its head, spine, rear legs, tail and mechanical back details, no face turned toward viewer. Full silhouette with all extremities inside frame and 10 percent transparent padding. True transparent RGBA background, no floor, no ground shadow, no labels, no scenery. One character only.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID ebd7d1a5-440c-477e-91ff-774b7ff11a08.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 133,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Use case: stylized-concept. Single full-body REAR VIEW battle sprite of Eevee using this reference. Preserve the amber ceramic body, cream fiber optic neck ruff, cyber ears, crystalline tail tip and antenna fins. Camera behind the creature, rear three-quarter view, head and body looking away toward upper RIGHT. Show the back of its head, spine, rear legs, tail and mechanical back details, no face turned toward viewer. Full silhouette with all extremities inside frame and 10 percent transparent padding. True transparent RGBA background, no floor, no ground shadow, no labels, no scenery. One character only.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 6c2912ad-493e-4e3a-ba7a-d4d8383aee9f.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    },
+    {
+      "id": 134,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/134.png",
+      "prompt": "Use case: stylized-concept. Single full-body REAR VIEW battle sprite of Vaporeon using this reference. Preserve its transparent fluid body and tail, pearly fins, white armor and glowing joints. Camera behind the creature, rear three-quarter view, head and body looking away toward upper RIGHT. Show the back of its head, spine, rear legs, tail and mechanical back details, no face turned toward viewer. Full silhouette with all extremities inside frame and 10 percent transparent padding. True transparent RGBA background, no floor, no ground shadow, no labels, no scenery. One character only."
+    },
+    {
+      "id": 135,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/135.png",
+      "prompt": "Use case: stylized-concept. Single full-body REAR VIEW battle sprite of Jolteon using this reference. Preserve its golden spiky armor, white ruff, black mechanical joints and neon yellow spines. Camera behind the creature, rear three-quarter view, head and body looking away toward upper RIGHT. Show the back of its head, spine, rear legs, tail and mechanical back details, no face turned toward viewer. Full silhouette with all extremities inside frame and 10 percent transparent padding. True transparent RGBA background, no floor, no ground shadow, no labels, no scenery. One character only."
+    },
+    {
+      "id": 92,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/92.png",
+      "prompt": "Single full-body rear-view battle sprite of Gastly, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only."
+    },
+    {
+      "id": 93,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Single full-body rear-view battle sprite of Haunter, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only.",
+      "error": "image generation failed: http 429 Too Many Requests: Some(\"{\\\"error\\\":{\\\"type\\\":\\\"usage_limit_reached\\\",\\\"message\\\":\\\"The usage limit has been reached\\\",\\\"plan_type\\\":\\\"plus\\\",\\\"resets_at\\\":1790461211,\\\"eligible_promo\\\":null,\\\"limit_window_minutes\\\":null,\\\"resets_in_seconds\\\":2037}}\")"
+    },
+    {
+      "id": 94,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/94.png",
+      "prompt": "Single full-body rear-view battle sprite of Gengar, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only."
+    },
+    {
+      "id": 123,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/123.png",
+      "prompt": "Single full-body rear-view battle sprite of Scyther, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only."
+    },
+    {
+      "id": 212,
+      "status": "complete",
+      "source": null,
+      "destination": "assets/creatures/back/212.png",
+      "prompt": "Single full-body rear-view battle sprite of Scizor, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only."
+    },
+    {
+      "id": 137,
+      "status": "blocked",
+      "destination": null,
+      "prompt": "Single full-body rear-view battle sprite of Porygon, using the supplied reference character. Preserve its colors, silhouette and cyberpunk mechanical design; add coherent subtle cyan circuitry to any plain surfaces. Polished game illustration. Camera behind the creature looking toward upper right: show its back and back of head, no face looking at viewer. Entire character visible with transparent padding. True transparent RGBA background, no scenery, text, floor or ground shadow. One character only.",
+      "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID 69b149e3-c174-4e24-a679-39b15d194f87.\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"other\\\"\\n      ]\\n    }\\n  }\\n}\")"
+    }
+  ],
+  "pikachu_front": {
+    "status": "blocked",
+    "reason": "Output moderation rejected two attempts; existing front retained.",
+    "prompt": "Use case: stylized-concept. Production game sprite, one creature only. Redesign Pikachu as a premium cyber-organic companion for Neon Kanto. The reference Squirtle is STYLE ONLY: match its polished cel-shaded anime illustration, rich dimensional highlights, integrated robotics, crisp dark outlines. Recognizable Pikachu proportions, golden yellow ceramic armor softly integrated with fur, black tipped long ears with small cyan circuits, expressive eyes, red cheek capacitors, articulated titanium ankle cuffs, and a segmented lightning-bolt tail with a luminous cyan glass energy core; subtle copper details, no bulky chest box. Full body front three-quarter view facing slightly LEFT for enemy battle sprite, all ears, tail, feet fully in frame, compact grounded battle-ready pose, premium coherent character design not a flat official illustration with rectangular overlays. True transparent RGBA background, no ground shadow, no scenery, no text, no UI, no watermark. Square canvas generous 10% transparent padding. Output local PNG asset."
+  }
+}

@@ -1,5 +1,7 @@
 extends "res://base_game.gd"
 
+const BattleArena=preload("res://scripts/combat/battle_arena.gd")
+
 const CYAN = Color("53e8eb")
 const PINK = Color("ee70c7")
 const NAVY = Color("101a30")
@@ -16,10 +18,15 @@ var map_weather = true
 var native_augmented: Array = []
 var defeated_trainers = 0
 var ground_pivots = {}
+var back_sprites = {}
+var back_ground_pivots = {}
 
 func _ready():
  texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
  super._ready()
+ for id in SPECIES:
+  var rear_path="res://assets/creatures/back/"+str(id)+".png"
+  if ResourceLoader.exists(rear_path): back_sprites[id]=load(rear_path)
  if FileAccess.file_exists("res://assets/art_manifest.json"):
   for value in JSON.parse_string(FileAccess.get_file_as_string("res://assets/art_manifest.json")).get("native_augmented",[]): native_augmented.append(int(value))
  var rows = JSON.parse_string(FileAccess.get_file_as_string("res://catalog.json"))
@@ -59,6 +66,23 @@ func capture_shots():
  get_tree().quit()
 
 func ground_origin(id:int, anchor:Vector2, size:float, mirrored:bool)->Vector2:
+ if mirrored and back_sprites.has(id):
+  if not back_ground_pivots.has(id):
+   var rear_image=back_sprites[id].get_image()
+   var rear_bounds=rear_image.get_used_rect()
+   # Ignore almost invisible glow pixels below the feet when grounding art.
+   var contact_y=rear_bounds.end.y
+   for y in range(rear_bounds.end.y-1,rear_bounds.position.y-1,-1):
+    var solid=false
+    for x in range(rear_bounds.position.x,rear_bounds.end.x):
+     if rear_image.get_pixel(x,y).a>=0.2:
+      solid=true
+      break
+    if solid:
+     contact_y=y+1
+     break
+   back_ground_pivots[id]=Vector2(float(rear_bounds.position.x+rear_bounds.size.x*0.5)/rear_image.get_width(),float(contact_y)/rear_image.get_height())
+  return anchor-back_ground_pivots[id]*size
  if not ground_pivots.has(id):
   var img=sprites[str(id)].get_image()
   var bounds=img.get_used_rect()
@@ -138,7 +162,8 @@ func action(a: String):
    p.maxhp+=3
    p.hp=mini(p.maxhp,p.hp+3)
    cry(int(p.id))
-   toast("Simulación completa · nivel "+str(p.level))
+   CombatRules.normalize(p,SPECIES[int(p.id)][1])
+   toast("Nivel "+str(p.level)+" · revisa TÉCNICAS para nuevas opciones.")
  elif a == "rain": map_weather=not map_weather
  elif a == "dex": mode="dex"
  else:
@@ -200,6 +225,7 @@ func apply_evolution(i: int,target: int):
  var oldmax=int(p.maxhp)
  var newmax=mon(target,int(p.level)).maxhp
  p.id=target
+ CombatRules.normalize(p,SPECIES[target][1])
  p.maxhp=newmax
  p.hp=mini(newmax,int(p.hp)+maxi(0,newmax-oldmax))
  if not target in seen: seen.append(target)
@@ -288,118 +314,17 @@ func button(r:Rect2,title:String,a:String,color=INK):
 
 func sprite(id:int,at:Vector2,size:float,back=false,alpha=1.0):
  if not sprites.has(str(id)): return
- var texture=sprites[str(id)]
- draw_set_transform(at+Vector2(size if back else 0,0),0,Vector2(-1 if back else 1,1))
+ var has_rear=back and back_sprites.has(id)
+ var texture=back_sprites[id] if has_rear else sprites[str(id)]
+ var flip=back and not has_rear
+ draw_set_transform(at+Vector2(size if flip else 0,0),0,Vector2(-1 if flip else 1,1))
  draw_texture_rect(texture,Rect2(Vector2.ZERO,Vector2(size,size)),false,Color(1,1,1,alpha))
  draw_set_transform(Vector2.ZERO,0,Vector2.ONE)
  # Six illustrated bases receive bespoke animated mechanical parts.
- if id in native_augmented: draw_cyber_overlay(id,at,size,back,alpha)
+ if id in native_augmented and not has_rear: draw_cyber_overlay(id,at,size,back,alpha)
 
 func draw_cyber_overlay(id:int,at:Vector2,size:float,back:bool,alpha:float):
- # These six designs use high-resolution illustrated bases with bespoke live
- # mechanical geometry. The augmentations animate, rotate and emit light.
- var origin=at+Vector2(size if back else 0,0)
- draw_set_transform(origin,0,Vector2(-size if back else size,size)/475.0)
- var c=CYAN
- var pink=PINK
- c.a=alpha
- pink.a=alpha
- var steel=Color(.16,.24,.34,alpha)
- var rim=Color(.52,.66,.73,alpha)
- if id==6:
-  for pts in [PackedVector2Array([Vector2(34,210),Vector2(126,124),Vector2(158,192),Vector2(208,216),Vector2(134,226)]),PackedVector2Array([Vector2(296,214),Vector2(370,141),Vector2(430,190),Vector2(442,236),Vector2(367,229)])]:
-   draw_colored_polygon(pts,Color(.15,.70,.85,.48*alpha))
-   for i in range(pts.size()):
-    draw_line(pts[i],pts[(i+1)%pts.size()],c,3)
-    draw_line(pts[i],pts[0].lerp(pts[2],.5),Color(.49,.9,1,.45*alpha),1)
-  draw_arc(Vector2(248,278),29,0,TAU,40,steel,12)
-  draw_arc(Vector2(248,278),25,0,TAU,40,c,3)
-  draw_circle(Vector2(248,278),13,steel)
-  draw_circle(Vector2(248,278),7,c)
-  glow(Vector2(248,278),28,CYAN,.11)
-  draw_line(Vector2(229,91),Vector2(252,94),c,5)
-  for q in [Vector2(143,244),Vector2(345,245)]:
-   draw_circle(q,13,steel)
-   draw_arc(q,10,0,TAU,24,rim,2)
-   draw_circle(q,4,c)
- elif id==9:
-  var plate=PackedVector2Array([Vector2(94,151),Vector2(194,125),Vector2(254,141),Vector2(273,236),Vector2(214,335),Vector2(91,353),Vector2(70,267)])
-  draw_colored_polygon(plate,steel)
-  for i in range(plate.size()): draw_line(plate[i],plate[(i+1)%plate.size()],rim,5)
-  var center=Vector2(167,244)
-  for q in plate:
-   draw_line(q,center,c,2)
-  draw_circle(center,48,Color("14283a"))
-  draw_arc(center,41,0,TAU,40,c,5)
-  draw_arc(center,31,clock,clock+PI*1.6,32,pink,3)
-  draw_circle(center,15,c)
-  glow(center,48,CYAN,.10)
-  panel(Rect2(328,133,57,43),steel,rim)
-  draw_line(Vector2(331,147),Vector2(381,141),c,5)
-  draw_line(Vector2(331,163),Vector2(381,156),c,3)
-  draw_circle(Vector2(382,148),10,Color("173a50"))
-  draw_arc(Vector2(382,148),9,0,TAU,24,c,3)
- elif id==25:
-  draw_colored_polygon(PackedVector2Array([Vector2(126,273),Vector2(202,269),Vector2(249,293),Vector2(270,369),Vector2(142,378)]),steel)
-  draw_line(Vector2(142,290),Vector2(157,364),c,4)
-  draw_line(Vector2(237,292),Vector2(254,365),pink,4)
-  draw_circle(Vector2(193,328),15,rim)
-  draw_circle(Vector2(193,328),10,c)
-  draw_circle(Vector2(182,204),20,steel)
-  draw_arc(Vector2(182,204),16,0,TAU,32,pink,4)
-  draw_circle(Vector2(182,204),6,pink)
-  for i in range(4): draw_line(Vector2(89,100+i*10),Vector2(116,92+i*10),rim,5)
-  for i in range(3):
-   var q=Vector2(345+i*25,192-i*15)
-   draw_line(q,q+Vector2(5,29),steel,8)
-   draw_line(q+Vector2(3,0),q+Vector2(8,29),c,3)
- elif id==26:
-  for q in [Vector2(81,162),Vector2(176,156)]:
-   draw_circle(q,19,steel)
-   draw_arc(q,16,clock,clock+PI*1.7,32,Color("f5c574"),3)
-   draw_circle(q,7,c)
-  for i in range(5):
-   draw_line(Vector2(200+i*6,106-i*7),Vector2(213+i*5,112-i*7),rim,5)
-  draw_arc(Vector2(129,256),32,0,TAU,32,steel,10)
-  draw_arc(Vector2(129,256),28,0,TAU,32,pink,3)
-  for i in range(4):
-   var q=Vector2(313+i*27,244+i*11)
-   draw_line(q,q+Vector2(9,25),steel,7)
-   draw_line(q+Vector2(3,0),q+Vector2(12,25),c,2)
-  var previous=Vector2(248,245)
-  for i in range(7):
-   var q=Vector2(254+i*13,245+sin(i*2+clock*17)*8)
-   draw_line(previous,q,c,2)
-   previous=q
- elif id==93:
-  for q in [Vector2(80,239),Vector2(275,355)]:
-   draw_arc(q,31,0,TAU,36,pink,3)
-   for i in range(3):
-    var start=q+Vector2((i-1)*14,0)
-    draw_line(start,start+Vector2(-7,24),steel,12)
-    draw_line(start+Vector2(-7,24),start+Vector2(-15,37),rim,7)
-    draw_circle(start,5,c)
-  for i in range(9):
-   var q=Vector2(160+(i*37)%222,114+(i*51)%207)
-   box(Rect2(q+Vector2(sin(clock*3+i)*8,0),Vector2(15,3)),Color(.59,.45,.92,.5*alpha))
-  draw_line(Vector2(259,241),Vector2(329,206),c,3)
-  draw_circle(Vector2(298,207),7,steel)
-  draw_circle(Vector2(298,207),3,c)
- elif id==137:
-  var vertices=[Vector2(60,205),Vector2(202,109),Vector2(275,196),Vector2(369,230),Vector2(253,342),Vector2(138,327),Vector2(157,208)]
-  for i in range(vertices.size()):
-   draw_line(vertices[i],vertices[(i+1)%vertices.size()],c,3)
-   draw_circle(vertices[i],5,steel)
-   draw_circle(vertices[i],2,pink)
-  draw_arc(Vector2(187,155),22,0,TAU,32,steel,8)
-  draw_circle(Vector2(187,155),9,c)
-  var center=Vector2(293,269)
-  draw_arc(center,24,clock,clock+TAU*.8,32,pink,4)
-  for i in range(5):
-   var q=center+Vector2(cos(clock+i*TAU/5),sin(clock+i*TAU/5))*43
-   draw_line(center,q,Color(.37,.82,.98,.4),1)
-   draw_circle(q,5,c)
- draw_set_transform(Vector2.ZERO,0,Vector2.ONE)
+ preload("res://scripts/presentation/cyber_augmentation.gd").draw(self,id,at,size,back,alpha,clock)
 
 
 func draw_title():
@@ -706,9 +631,14 @@ func draw_party():
      button(Rect2(x+118+j*141,y+105,135,24),"→ "+SPECIES[target][0],"evolve:"+str(i)+":"+str(target))
    else: label_at("Evolución disponible: Nv. "+str(EV_LEVEL[id]),Vector2(x+118,y+121),13,Color("8ca4bd"))
   else: label_at("CONFIGURACIÓN FINAL",Vector2(x+118,y+121),12,PINK)
- button(Rect2(54,627,290,35),"SIMULADOR +1 NIVEL / ₽80","train")
- button(Rect2(655,627,249,35),"CAJA DIGITAL","archive")
- label_at("Entrena al líder · saldo ₽"+str(money),Vector2(362,650),15,Color("91abc3"))
+ # Replace the generic overlay footer so each click maps to one visible control.
+ buttons=buttons.filter(func(b):return b.action!="world")
+ box(Rect2(45,584,870,115),Color("101d32"))
+ label_at("Entrena al líder · saldo ₽"+str(money),Vector2(54,606),15,Color("91abc3"))
+ button(Rect2(54,619,280,35),"SIMULADOR +1 NIVEL / ₽80","train")
+ button(Rect2(348,619,265,35),"CAJA DIGITAL","archive")
+ button(Rect2(627,619,277,35),"TÉCNICAS DEL EQUIPO","techniques")
+ button(Rect2(54,661,850,30),"VOLVER AL MAPA [ESC]","world")
 
 func draw_dex():
  overlay("CÓDEX / 20 FORMAS CIBERNÉTICAS",str(seen.size())+" vistas · "+str(captured.size())+" registradas · pulsa una ficha para explorar el diseño y escucharla")
@@ -788,27 +718,20 @@ func status_panel(r:Rect2,p:Dictionary,own:bool):
   box(Rect2(r.position+Vector2(17,94),Vector2(r.size.x-34,3)),Color("213d53"))
   box(Rect2(r.position+Vector2(17,94),Vector2((r.size.x-34)*float(p.xp)/(p.level*12),3)),PINK)
 
-func draw_battle():
- draw_skyline(Rect2(0,0,960,490))
- for y in range(290,490):
-  draw_line(Vector2(0,y),Vector2(960,y),Color("13283a").lerp(Color("0c1729"),float(y-290)/200),1)
- for i in range(12):
-  var y=300+i*i*1.4
-  draw_line(Vector2(0,y),Vector2(960,y),Color("244054"),1)
- for i in range(13): draw_line(Vector2(480+(i-6)*27,280),Vector2(480+(i-6)*170,490),Color("244054"),1)
- ellipse_shape(Vector2(716,291),Vector2(178,37),Color("13354a"))
- ellipse_shape(Vector2(716,291),Vector2(167,30),Color("1b4557"))
- ellipse_shape(Vector2(716,291),Vector2(71,13),Color(0,0,0,.5))
- ellipse_shape(Vector2(238,455),Vector2(192,31),Color("213247"))
- ellipse_shape(Vector2(238,455),Vector2(88,15),Color(0,0,0,.5))
- glow(Vector2(720,237),99,CYAN,.025)
- glow(Vector2(235,380),103,PINK,.02)
+func draw_battle_scene():
+ draw_set_transform(Vector2.ZERO,0,Vector2(battle_canvas_width/960.0,1))
+ BattleArena.draw(self,zone,clock)
+ draw_set_transform(Vector2.ZERO,0,Vector2.ONE)
  draw_battle_pokemon()
  draw_attack_effects()
+
+func draw_battle():
+ draw_battle_scene()
  status_panel(Rect2(38,80,378,78),enemy,false)
  status_panel(Rect2(522,345,395,107),party[active],true)
  box(Rect2(0,0,960,50),Color("091426"))
  label_at("COMBATE / "+("SEÑAL SALVAJE" if trainer=="" else trainer),Vector2(30,32),15,CYAN)
+ label_at(["PALETA / JARDÍN DE VIDRIO","BRECHA / FUNDICIÓN","CROMO / CATEDRAL DE DATOS"][zone],Vector2(610,32),12,CYAN)
  box(Rect2(0,490,960,230),Color("0a1425"))
  panel(Rect2(24,511,464,181),Color("122239"),Color("385972"))
  var display_text=battle_text
@@ -818,7 +741,9 @@ func draw_battle():
    if Rect2(510,508+i*39,425,35).has_point(get_global_mouse_position()):
     var move=move_set(party[active])[i]
     var effects={"guard":"Aumenta el blindaje hasta dos cargas. Se pierde al cambiar.","weaken":"Reduce la potencia rival hasta dos cargas.","burn":"Quema: daño al final del turno y menor ataque físico.","sleep":"Duerme al rival durante dos acciones.","paralysis":"Reduce Velocidad y puede impedir actuar.","":"Daño "+("especial" if move.special else "físico")+". Potencia "+str(move.power)+"."}
-    display_text=move.name+" / "+move.type+"\nPrecisión: "+str(move.accuracy)+"%\n"+effects[move.effect]
+    display_text=move.name+" / "+move.type+"\nPrecisión: "+str(move.accuracy)+"%"
+    if int(move.power)>0: display_text+=" · Potencia "+str(move.power)+(" especial" if move.special else " física")
+    display_text+="\n"+(str(move.chance)+"%: " if int(move.power)>0 and move.effect!="" else "")+effects[move.effect]
  paragraph(display_text,Vector2(44,548),419,18,WHITE)
  if turn_locked:
   for i in range(3): draw_circle(Vector2(677+i*22,600+sin(clock*6+i)*4),3,CYAN)
@@ -844,8 +769,8 @@ func draw_attack_effects():
  if not attack_fx.is_empty() and attack_fx.kind in ["FANTASMA","ACERO"]:
   var t=fx_progress()
   if t<0 or t>1: return
-  var source=Vector2(260,343) if attack_fx.own else Vector2(706,201)
-  var target=Vector2(713,216) if attack_fx.own else Vector2(235,365)
+  var source=battle_point(Vector2(260,343) if attack_fx.own else Vector2(706,201))
+  var target=battle_point(Vector2(713,216) if attack_fx.own else Vector2(235,365))
   var q=source.lerp(target,clampf(t/.55,0,1))
   if attack_fx.kind=="FANTASMA":
    glow(q,29,PINK,.17)
@@ -953,8 +878,8 @@ func draw_battle_pokemon():
    else:
     own_offset.x += shake
     own_alpha = blink
- sprite(int(enemy.id),ground_origin(int(enemy.id),Vector2(716,291),238,false)+enemy_offset,238,false,enemy_alpha)
- sprite(int(party[active].id),ground_origin(int(party[active].id),Vector2(238,455),282,true)+own_offset,282,true,own_alpha)
+ sprite(int(enemy.id),ground_origin(int(enemy.id),battle_point(Vector2(716,291)),238,false)+enemy_offset,238,false,enemy_alpha)
+ sprite(int(party[active].id),ground_origin(int(party[active].id),battle_point(Vector2(238,455)),282,true)+own_offset,282,true,own_alpha)
 
 
 func _exit_tree():
@@ -967,3 +892,5 @@ func _exit_tree():
  oscillator=null
  voices.clear()
  sprites.clear()
+ back_sprites.clear()
+ back_ground_pivots.clear()

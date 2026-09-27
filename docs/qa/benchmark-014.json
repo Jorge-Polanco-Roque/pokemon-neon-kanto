@@ -1,0 +1,16 @@
+{
+  "adapter": "Apple M5",
+  "draw_calls": 714.0,
+  "engine_static_memory_bytes": 49874470.0,
+  "frames": 180,
+  "fullscreen_roundtrip": true,
+  "layout_cases": 18,
+  "median_ms": 7.538,
+  "note": "Short foreground Paleta sample; not a ten-minute benchmark, loading/audio not measured.",
+  "p95_ms": 13.65,
+  "renderer": "gl_compatibility",
+  "version": "0.14 initial P1",
+  "viewport": "(1280.0, 720.0)",
+  "window": "(1920, 1080)",
+  "world_render_size": "(1872, 846)"
+}

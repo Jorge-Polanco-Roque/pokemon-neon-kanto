@@ -1,5 +1,15 @@
 extends "res://story_game.gd"
 
+const FieldProtocols=preload("res://scripts/combat/field_protocols.gd")
+var restored_sites:Array=[]
+var field_site=0
+var field_notice=""
+
+const NeuralChips=preload("res://scripts/combat/neural_chips.gd")
+var chip_licenses:Array=[]
+var chip_selected=0
+var chip_notice=""
+
 const WARDENS = ["VIGÍA / CONTROL DE RAÍCES", "MANTIS / HORNO DE DATOS", "NEXUS / ÚLTIMA SINAPSIS"]
 const WARDEN_IDS = [137,212,94]
 const WARDEN_LEVELS = [7,10,13]
@@ -17,10 +27,15 @@ var radio_last_zone = -1
 var radio_seconds = 0.0
 var radio_text = ""
 var campaign_save_error = ""
+var screen_root
 var modern_view: SubViewport
 var interior_view: SubViewport
 var interior_id=""
 var exterior_pos=Vector2i(13,12)
+var technique_subject=0
+var technique_page=0
+var pending_technique=""
+var technique_notice=""
 var air_quest=0
 var air_dialogue=""
 var air_drone_battle=false
@@ -40,6 +55,10 @@ func _ready():
  if DisplayServer.get_name()!="headless":
   modern_view=preload("res://scenes/world/modern_world.tscn").instantiate()
   add_child(modern_view)
+  screen_root=preload("res://scripts/ui/screen_root.gd").new()
+  add_child(screen_root)
+  screen_root.setup(self)
+  modern_view.reduced_motion=screen_root.settings.values.reduced_motion
 
 func sync_modern_view():
  if interior_view:
@@ -61,7 +80,7 @@ func sync_modern_view():
   modern_view.build_prologue(prologue_phase,rescued_cores)
   modern_view.sync_player(story_visual,Vector2(facing),walking)
  else:
-  modern_view.size=Vector2i(1280,696)
+  if not screen_root or mode!="world": modern_view.size=Vector2i(1280,696)
   modern_view.camera.size=14.5
   modern_view.set_corruption(corruption(zone))
   if modern_view.scene_key!="district:"+str(zone):
@@ -70,11 +89,18 @@ func sync_modern_view():
     var row=[]
     for x in range(28): row.append(terrain(x,y))
     tiles.append(row)
-   modern_view.build_district(zone,tiles,buildings(),[TERMINALS[zone]],records,npc_position())
+   modern_view.build_district(zone,tiles,buildings(),[TERMINALS[zone]],records,npc_position(),restored_sites)
   modern_view.sync_player(visual_pos,Vector2(facing),walking)
 
 
 func reset_game():
+ if modern_view: modern_view.scene_key=""
+ restored_sites=[]
+ field_site=0
+ field_notice=""
+ chip_licenses=[]
+ chip_selected=0
+ chip_notice=""
  if interior_view:
   interior_view.queue_free()
   interior_view=null
@@ -109,7 +135,7 @@ func _process(delta):
 
 func corruption(district:int)->int:
  var fate=core_fates.get(str(district),"")
- return {"":85,"reactivate":35,"release":0,"sacrifice":70}.get(fate,85)
+ return maxi(0,int({"":85,"reactivate":35,"release":0,"sacrifice":70}.get(fate,85))-(20 if district in restored_sites else 0))
 
 func biosphere_score()->int:
  var result=0
@@ -120,6 +146,67 @@ func ending_for_score(score:int)->String:
  return "rebirth" if score>=5 else ("sanctuary" if score>=2 else "ashes")
 
 func action(a:String):
+ if a=="field" and mode=="world" and not party.is_empty():
+  field_site=zone
+  field_notice=""
+  mode="field"
+  return
+ if mode=="field":
+  if a=="field_close": mode="world"
+  elif a.begins_with("field_site:"):
+   field_site=clampi(int(a.get_slice(":",1)),0,2)
+   field_notice=""
+  elif a.begins_with("field_use:"): restore_field_site(int(a.get_slice(":",1)))
+  return
+ if a=="chips" and mode in ["world","party","techniques"] and not party.is_empty():
+  technique_subject=clampi(active if mode!="techniques" else technique_subject,0,party.size()-1)
+  chip_notice=""
+  mode="chips"
+  return
+ if mode=="chips":
+  if a=="chips_close":
+   mode="party"
+  elif a.begins_with("chip_select:"):
+   chip_selected=clampi(int(a.get_slice(":",1)),0,NeuralChips.CATALOG.size()-1)
+   chip_notice=""
+  elif a.begins_with("chip_subject:"):
+   technique_subject=clampi(int(a.get_slice(":",1)),0,party.size()-1)
+   chip_notice=""
+  elif a=="chip_buy": buy_neural_chip()
+  elif a=="chip_teach": teach_neural_chip()
+  return
+ if a=="techniques" and mode in ["world","party"] and not party.is_empty():
+  technique_subject=active
+  technique_page=0
+  pending_technique=""
+  technique_notice=""
+  CombatRules.normalize(party[technique_subject],SPECIES[int(party[technique_subject].id)][1])
+  mode="techniques"
+  return
+ if mode=="techniques":
+  if a=="tech_close": mode="party"; return
+  if a=="tech_cancel": pending_technique=""; return
+  if a.begins_with("tech_subject:"):
+   technique_subject=clampi(int(a.get_slice(":",1)),0,party.size()-1)
+   technique_page=0
+   pending_technique=""
+   technique_notice=""
+   CombatRules.normalize(party[technique_subject],SPECIES[int(party[technique_subject].id)][1])
+   return
+  if a.begins_with("tech_page:"):
+   technique_page=maxi(0,int(a.get_slice(":",1)))
+   return
+  if a.begins_with("tech_pick:"):
+   var key=a.trim_prefix("tech_pick:")
+   if key in party[technique_subject].known_techniques and not key in party[technique_subject].techniques: pending_technique=key
+   return
+  if a.begins_with("tech_replace:"):
+   var creature=party[technique_subject]
+   var slot=int(a.get_slice(":",1))
+   if CombatRules.equip(creature,SPECIES[int(creature.id)][1],pending_technique,slot):
+    technique_notice="Técnica equipada. Los PP gastados se conservan. Guarda con F5 al volver al mapa."
+    pending_technique=""
+   return
  if a=="air_close":
   mode="world"
   air_dialogue=""
@@ -178,6 +265,9 @@ func interact():
   else: toast("Acércate a la persona o a la salida y pulsa E.")
   return
  if mode=="world":
+  if pos.distance_to(FieldProtocols.SITES[zone].cell)<=1.5:
+   action("field")
+   return
   if zone==0:
    for index in range(buildings().size()):
     var structure=buildings()[index][0]
@@ -355,8 +445,9 @@ func commit_fate():
 func save_game():
  campaign_save_error=""
  if party.is_empty(): return false
- var data={"version":7,"party":party,"archive":archive,"active":active,"zone":zone,"x":exterior_pos.x if interior_id!="" else pos.x,"y":exterior_pos.y if interior_id!="" else pos.y,"balls":balls,"potions":potions,"money":money,"rival":rival_done,"badge":badge,"seen":seen,"captured":captured,"unlocked_nodes":unlocked_nodes,
+ var data={"version":10,"party":party,"archive":archive,"active":active,"zone":zone,"x":exterior_pos.x if interior_id!="" else pos.x,"y":exterior_pos.y if interior_id!="" else pos.y,"balls":balls,"potions":potions,"money":money,"rival":rival_done,"badge":badge,"seen":seen,"captured":captured,"unlocked_nodes":unlocked_nodes,
   "story":{"prologue_complete":prologue_complete,"prologue_skipped":prologue_skipped,"found_records":found_records},
+  "chip_licenses":chip_licenses,"restored_sites":restored_sites,
   "exploration":{"air_quest":air_quest,"interior":interior_id,"room_x":pos.x,"room_y":pos.y},
   "campaign":{"wardens_down":wardens_down,"core_fates":core_fates,"ending":ending_id,"radio_history":radio_history}}
  var target=ProjectSettings.globalize_path(SAVE)
@@ -387,6 +478,17 @@ func load_game():
   interior_view=null
  interior_id=""
  air_drone_battle=false
+ restored_sites=[]
+ var restored=data.get("restored_sites",[])
+ if restored is Array:
+  for index in restored:
+   if (index is int or index is float) and int(index) in [0,1,2] and not int(index) in restored_sites: restored_sites.append(int(index))
+ if modern_view: modern_view.scene_key=""
+ chip_licenses=[]
+ var licenses=data.get("chip_licenses",[])
+ if licenses is Array:
+  for key in licenses:
+   if key is String and not NeuralChips.find(key).is_empty() and not key in chip_licenses: chip_licenses.append(key)
  var exploration=data.get("exploration",{})
  air_quest=clampi(int(exploration.get("air_quest",0)),0,4)
  if exploration.get("interior","") in ["clinic","archive"]:
@@ -416,16 +518,26 @@ func load_game():
    break
 
 func _draw():
+ if screen_root and mode=="battle":
+  buttons=[]
+  draw_battle_scene()
+  return
+ if screen_root and screen_root.handles_mode():
+  buttons=[]
+  return
  super._draw()
  if mode=="campaign": draw_campaign()
  elif mode=="core_choice": draw_core_choice()
  elif mode=="ending": draw_ending()
  elif mode=="air_dialogue": draw_air_dialogue()
+ elif mode=="techniques": draw_techniques()
+ elif mode=="chips": draw_neural_chips()
+ elif mode=="field": draw_field_operations()
 
 func draw_title():
  super.draw_title()
  box(Rect2(55,670,450,30),Color("0b1324"))
- label_at("EDICIÓN 0.9 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
+ label_at("EDICIÓN 0.17 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
 
 func draw_world():
  if interior_id!="":
@@ -441,7 +553,7 @@ func draw_world():
  label_at("CORRUPCIÓN "+str(corruption(zone))+"%   /   ₽"+str(money),Vector2(638,70),15,PINK)
  draw_texture_rect(modern_view.get_texture(),Rect2(0,97,960,522),false)
  draw_minimap()
- label_at("E  INTERACTUAR    WASD / FLECHAS  MOVER",Vector2(28,648),12,Color("94bac9"))
+ label_at("E INTERACTUAR · WASD MOVER · J CHIPS · L AUXILIO",Vector2(28,648),12,Color("94bac9"))
  button(Rect2(28,666,117,37),"EQUIPO [P]","party")
  button(Rect2(154,666,108,37),"BOLSA [B]","bag")
  button(Rect2(271,666,107,37),"CÓDEX [N]","dex")
@@ -638,6 +750,8 @@ func draw_minimap():
  draw_line(Vector2(873,116),Vector2(873,180),Color("4a6976"),3)
  var node=Vector2(817,116)+Vector2(TERMINALS[zone])*4.2
  draw_circle(node,3,PINK)
+ var site=Vector2(817,116)+Vector2(FieldProtocols.SITES[zone].cell)*4.2
+ box(Rect2(site-Vector2(2,2),Vector2(5,5)),Color("7bf2bc") if zone in restored_sites else Color("ffd28d"))
  draw_circle(Vector2(817,116)+Vector2(pos)*4.2,3,CYAN)
  label_at("N ↑   /   E · conectar",Vector2(819,195),10,Color("adc5cd"))
 
@@ -715,6 +829,37 @@ func draw_air_dialogue():
  button(Rect2(140,next_y,678,36),"VOLVER","air_close")
 
 func _unhandled_input(event):
+ if mode=="field":
+  if event is InputEventKey and event.pressed and not event.echo:
+   if event.physical_keycode in [KEY_ESCAPE,KEY_L]: action("field_close")
+  elif event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
+   for b in buttons:
+    if b.rect.has_point(get_global_mouse_position()): action(b.action); return
+  return
+ if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode==KEY_L and mode=="world":
+  action("field")
+  return
+ if mode=="chips":
+  if event is InputEventKey and event.pressed and not event.echo:
+   if event.physical_keycode==KEY_ESCAPE: action("chips_close")
+  elif event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
+   for b in buttons:
+    if b.rect.has_point(get_global_mouse_position()): action(b.action); return
+  return
+ if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode==KEY_J and mode=="world":
+  action("chips")
+  return
+ if mode=="techniques":
+  if event is InputEventKey and event.pressed and not event.echo:
+   if event.physical_keycode==KEY_ESCAPE:
+    if pending_technique!="": action("tech_cancel")
+    else: action("tech_close")
+   elif pending_technique!="" and event.physical_keycode>=KEY_1 and event.physical_keycode<=KEY_4:
+    action("tech_replace:"+str(event.physical_keycode-KEY_1))
+  elif event is InputEventMouseButton and event.pressed and event.button_index==MOUSE_BUTTON_LEFT:
+   for b in buttons:
+    if b.rect.has_point(get_global_mouse_position()): action(b.action); return
+  return
  if mode=="air_dialogue":
   if event is InputEventKey and event.pressed and not event.echo:
    if event.physical_keycode==KEY_ESCAPE: action("air_close")
@@ -733,3 +878,190 @@ func _unhandled_input(event):
   if event.physical_keycode in [KEY_K,KEY_ESCAPE] and mode=="campaign": mode="world"; return
   if event.physical_keycode==KEY_ESCAPE and mode=="ending": mode="world"; return
  super._unhandled_input(event)
+
+
+func draw_techniques():
+ buttons=[]
+ box(Rect2(0,0,960,720),Color("091321"))
+ var creature=party[technique_subject]
+ label_at("ARCHIVO DE TÉCNICAS / CONFIGURAR FUERA DEL COMBATE",Vector2(30,29),13,CYAN)
+ label_at(combat_name(creature)+" / NIVEL "+str(creature.level),Vector2(30,72),30)
+ for i in range(party.size()):
+  button(Rect2(30+i*151,91,143,33),str(i+1)+" "+combat_name(party[i]).capitalize(),"tech_subject:"+str(i))
+ label_at("EQUIPADAS / 4 RANURAS",Vector2(30,160),15,CYAN)
+ for i in range(4):
+  var move=move_set(creature)[i]
+  panel(Rect2(30,177+i*95,416,82),Color("162a3b"),Color("325b68"))
+  label_at(str(i+1)+"  "+move.name,Vector2(45,204+i*95),18)
+  label_at(move.type+" · "+str(creature.pp[i])+"/"+str(move.max_pp)+" PP",Vector2(45,229+i*95),14,CYAN)
+  label_at("Potencia "+str(move.power)+" / Precisión "+str(move.accuracy)+"%",Vector2(45,249+i*95),13,Color("a4bdcb"))
+ label_at("BIBLIOTECA / NIVEL Y CHIPS",Vector2(476,160),15,CYAN)
+ var available=creature.known_techniques
+ var page_count=maxi(1,ceili(available.size()/5.0))
+ technique_page=clampi(technique_page,0,page_count-1)
+ for i in range(5):
+  var index=technique_page*5+i
+  if index>=available.size(): break
+  var key=available[index]
+  var move=CombatRules.technique(key,int(creature.level))
+  var equipped=key in creature.techniques
+  var y=177+i*72
+  button(Rect2(476,y,454,64),move.name+(" · EQUIPADA" if equipped else " · ELEGIR"),"tech_pick:"+key)
+  label_at(move.type+" / Pot. "+str(move.power)+" / "+str(move.accuracy)+"% / "+str(move.max_pp)+" PP máx.",Vector2(490,y+55),12,Color("94b2c6"))
+ button(Rect2(476,550,215,31),"← ANTERIOR","tech_page:"+str(maxi(0,technique_page-1)))
+ button(Rect2(703,550,227,31),"SIGUIENTE →","tech_page:"+str(mini(page_count-1,technique_page+1)))
+ paragraph("Nv. 6: Láser de precisión · Nv. 10: Descarga de afinidad · Nv. 14: Corte de afinidad. Las técnicas anteriores se conservan al evolucionar.",Vector2(30,604),900,16,Color("a4bdcb"))
+ if technique_notice!="": label_at(technique_notice,Vector2(30,668),13,CYAN)
+ button(Rect2(30,680,570,30),"VOLVER AL EQUIPO [ESC]","tech_close")
+ button(Rect2(614,680,316,30),"MERCADO DE CHIPS","chips")
+ if pending_technique!="":
+  box(Rect2(0,0,960,720),Color(0,0,0,.9))
+  panel(Rect2(142,137,676,460),Color("142a3b"),CYAN)
+  var new_move=CombatRules.technique(pending_technique,int(creature.level))
+  label_at("EQUIPAR / "+new_move.name,Vector2(168,184),23,CYAN)
+  paragraph("Elige qué técnica retirar. Podrás recuperarla desde la biblioteca; sus PP gastados se conservarán.",Vector2(168,222),624,18,WHITE)
+  buttons=[]
+  for i in range(4): button(Rect2(168,288+i*52,624,43),str(i+1)+"  REEMPLAZAR "+move_set(creature)[i].name,"tech_replace:"+str(i))
+  button(Rect2(168,521,624,42),"CANCELAR [ESC]","tech_cancel")
+
+func buy_neural_chip():
+ var entry=NeuralChips.CATALOG[chip_selected]
+ if entry.key in chip_licenses:
+  chip_notice="Ya tienes esta licencia. Puedes usarla con todo el equipo."
+  return
+ if wardens_down.size()<entry.tier:
+  chip_notice="Libera "+str(entry.tier)+" guardianes para descifrar esta licencia."
+  return
+ if money<entry.price:
+  chip_notice="Saldo insuficiente. La licencia cuesta ₽"+str(entry.price)+"."
+  return
+ money-=entry.price
+ chip_licenses.append(entry.key)
+ if not save_game():
+  money+=entry.price
+  chip_licenses.erase(entry.key)
+  chip_notice="No se pudo guardar la compra. Tus créditos se han restaurado."
+  return
+ chip_notice="Licencia guardada. Selecciona un compañero compatible y enseña la técnica."
+
+func teach_neural_chip():
+ var entry=NeuralChips.CATALOG[chip_selected]
+ var creature=party[technique_subject]
+ var kind=SPECIES[int(creature.id)][1]
+ if not entry.key in chip_licenses:
+  chip_notice="Compra primero la licencia reutilizable."
+  return
+ if not NeuralChips.compatible(entry.key,kind):
+  chip_notice="Interfaz incompatible. Elige otro compañero de tu equipo."
+  return
+ CombatRules.normalize(creature,kind)
+ if entry.key in creature.known_techniques:
+  chip_notice="Ya conoce esta técnica. Puedes equiparla desde su biblioteca."
+  return
+ var previous=creature.duplicate(true)
+ creature.known_techniques.append(entry.key)
+ creature.technique_pp[entry.key]=CombatRules.technique(entry.key,int(creature.level)).max_pp
+ if not save_game():
+  party[technique_subject]=previous
+  chip_notice="No se pudo guardar el aprendizaje. Vuelve a intentarlo."
+  return
+ technique_page=0
+ pending_technique=entry.key
+ technique_notice="Técnica aprendida y guardada. Equípala en una de las cuatro ranuras."
+ mode="techniques"
+
+func draw_neural_chips():
+ buttons=[]
+ box(Rect2(0,0,960,720),Color("080f1c"))
+ for x in range(0,960,40): draw_line(Vector2(x,0),Vector2(x,720),Color(0.12,0.28,0.36,0.14),1)
+ label_at("MERCADO / NEURAL EXCHANGE",Vector2(30,34),14,CYAN)
+ label_at("Conocimiento fuera de la red",Vector2(30,75),28)
+ label_at("₽"+str(money),Vector2(810,72),25,CYAN)
+ for i in range(party.size()):
+  button(Rect2(30+i*151,96,143,34),str(i+1)+" "+combat_name(party[i]).capitalize(),"chip_subject:"+str(i),Color("245364") if i==technique_subject else INK)
+ for i in range(NeuralChips.CATALOG.size()):
+  var item=NeuralChips.CATALOG[i]
+  var state="LICENCIA ACTIVA" if item.key in chip_licenses else ("CIFRADO / "+str(item.tier)+" GUARDIANES" if wardens_down.size()<item.tier else "₽"+str(item.price)+" / REUTILIZABLE")
+  button(Rect2(30,157+i*73,378,64),item.name,"chip_select:"+str(i),Color("245364") if i==chip_selected else INK)
+  label_at(state,Vector2(44,210+i*73),12,CYAN if item.key in chip_licenses else Color("a7bdc9"))
+ var entry=NeuralChips.CATALOG[chip_selected]
+ var creature=party[technique_subject]
+ var kind=SPECIES[int(creature.id)][1]
+ var move=CombatRules.technique(entry.key,int(creature.level))
+ var compatible=NeuralChips.compatible(entry.key,kind)
+ panel(Rect2(430,157,500,438),Color("122538"),Color("31586b"))
+ sprite(int(creature.id),Vector2(756,166),150)
+ label_at(combat_name(creature),Vector2(451,195),22)
+ label_at("INTERFAZ "+kind,Vector2(451,222),13,CYAN)
+ label_at("COMPATIBLE" if compatible else "INCOMPATIBLE",Vector2(451,249),14,CYAN if compatible else PINK)
+ label_at(move.name,Vector2(451,335),22)
+ label_at(move.type+" / POT. "+str(move.power)+" / "+str(move.accuracy)+"% / "+str(move.max_pp)+" PP",Vector2(451,366),14,CYAN)
+ paragraph(entry.description,Vector2(451,399),450,17,WHITE)
+ paragraph("Interfaces: "+", ".join(entry.types)+". Compra una vez; enseña a todos los compañeros compatibles.",Vector2(451,454),450,15,Color("9bb5c6"))
+ if entry.key in chip_licenses:
+  button(Rect2(451,535,458,40),"ENSEÑAR AL COMPAÑERO" if not entry.key in creature.known_techniques else "TÉCNICA YA APRENDIDA","chip_teach")
+ else:
+  button(Rect2(451,535,458,40),"COMPRAR LICENCIA / ₽"+str(entry.price),"chip_buy")
+ paragraph(chip_notice if chip_notice!="" else "Las licencias se guardan al comprar. Enseñar no borra ataques: después eliges qué ranura usar. Desbloquea chips avanzados al derrotar guardianes.",Vector2(30,627),900,16,CYAN)
+ button(Rect2(30,678,900,32),"VOLVER AL EQUIPO [ESC]","chips_close")
+
+func walkable(cell:Vector2i)->bool:
+ if interior_id=="" and cell==FieldProtocols.SITES[zone].cell: return false
+ return super.walkable(cell)
+
+func restore_field_site(subject:int):
+ if field_site in restored_sites:
+  field_notice="Esta instalación ya está restaurada. La recompensa ya fue entregada."
+  return
+ if interior_id!="" or zone!=field_site or pos.distance_to(FieldProtocols.SITES[field_site].cell)>1.5:
+  field_notice="Acércate a la instalación indicada en el mapa y pulsa E."
+  return
+ if subject<0 or subject>=party.size(): return
+ var creature=party[subject]
+ if not FieldProtocols.ready(creature,SPECIES[int(creature.id)][1],field_site):
+  field_notice="Necesitas un compañero compatible, consciente y de nivel 6 o superior."
+  return
+ var previous_sites=restored_sites.duplicate()
+ var previous_licenses=chip_licenses.duplicate()
+ var previous_money=money
+ var previous_potions=potions
+ restored_sites.append(field_site)
+ money+=180
+ potions+=1
+ if restored_sites.size()==3:
+  money+=500
+  if not "chip/drone" in chip_licenses: chip_licenses.append("chip/drone")
+ if not save_game():
+  restored_sites=previous_sites
+  chip_licenses=previous_licenses
+  money=previous_money
+  potions=previous_potions
+  field_notice="No se pudo guardar. No se aplicó la reparación ni su recompensa."
+  return
+ if modern_view: modern_view.scene_key=""
+ field_notice="Red restaurada: +₽180, +1 poción y −20 de corrupción en este distrito."
+ if restored_sites.size()==3: field_notice+=" Red completa: +₽500 y licencia Enjambre."
+
+func draw_field_operations():
+ draw_world()
+ box(Rect2(0,0,960,720),Color(0.02,0.04,0.08,.96))
+ buttons=[]
+ label_at("RED DE AUXILIO / "+str(restored_sites.size())+" DE 3 INSTALACIONES",Vector2(30,38),16,CYAN)
+ label_at("Lo que la ciudad necesita",Vector2(30,81),30)
+ for i in range(3):
+  button(Rect2(30+i*304,107,290,42),["PALETA","BRECHA","CROMO"][i]+(" / RESTAURADA" if i in restored_sites else " / SIN SEÑAL"),"field_site:"+str(i))
+ var site=FieldProtocols.SITES[field_site]
+ label_at(site.name,Vector2(30,190),25)
+ paragraph(site.brief,Vector2(30,229),890,20,WHITE)
+ label_at(site.protocol+" / NIVEL 6+ / "+", ".join(site.types),Vector2(30,304),15,CYAN)
+ label_at("También sirve conocer "+CombatRules.technique(site.chip,6).name+". No ocupa ranuras ni gasta PP.",Vector2(30,332),14,Color("a4bdcb"))
+ var cell=site.cell
+ label_at("Instalación: ("+str(cell.x)+", "+str(cell.y)+") · marcador ámbar en el minimapa · E para interactuar",Vector2(30,362),14,Color("ffd28d"))
+ for i in range(party.size()):
+  var creature=party[i]
+  var ready=FieldProtocols.ready(creature,SPECIES[int(creature.id)][1],field_site)
+  var x=30+(i%2)*456
+  var y=389+(i/2)*54
+  button(Rect2(x,y,440,45),combat_name(creature)+" / "+("COMPLETADO" if field_site in restored_sites else ("USAR PROTOCOLO" if ready else "NO DISPONIBLE")),"" if field_site in restored_sites else "field_use:"+str(i))
+ paragraph(field_notice if field_notice!="" else "Cada instalación: ₽180, una poción y menos corrupción. Completa las tres: ₽500 extra y licencia Enjambre. Todo se guarda al reparar.",Vector2(30,581),895,17,CYAN)
+ button(Rect2(30,670,900,36),"VOLVER AL MAPA [ESC / L]","field_close")

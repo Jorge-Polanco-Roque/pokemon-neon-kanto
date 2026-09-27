@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "provenance": "Original algorithmic score; synthesized oscillators and seeded noise; no third-party recordings, MIDI or samples.",
+  "sample_rate": 44100,
+  "tracks": [
+    {
+      "key": "world",
+      "bpm": 100,
+      "bars": 16,
+      "seconds": 38.4,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -18.45,
+      "loop": true,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    },
+    {
+      "key": "wild",
+      "bpm": 156,
+      "bars": 32,
+      "seconds": 49.23077097505669,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -19.62,
+      "loop": true,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    },
+    {
+      "key": "trainer",
+      "bpm": 164,
+      "bars": 32,
+      "seconds": 46.82927437641723,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -19.61,
+      "loop": true,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    },
+    {
+      "key": "warden",
+      "bpm": 176,
+      "bars": 32,
+      "seconds": 43.636371882086166,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -19.58,
+      "loop": true,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    },
+    {
+      "key": "victory",
+      "bpm": 136,
+      "bars": 4,
+      "seconds": 7.058820861678004,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -18.61,
+      "loop": false,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    }
+  ]
+}

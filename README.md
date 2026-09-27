@@ -1,4 +1,102 @@
-## Edición 0.9 — Aire para los que quedan
+> **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; siguen mercados, diálogos e interiores.
+
+## Edición 0.17 — Restauración del arte cibernético y filtrado
+
+- ~~Implantes restaurados en las fichas.~~ El menú anterior mostraba sólo el PNG base y omitía la geometría cibernética. `CreaturePortrait` ahora compone el retrato con el mismo dibujado mecánico que usa el combate para Pikachu, Charizard, Blastoise, Raichu, Haunter y Porygon.
+- ~~Escalado de ilustraciones corregido.~~ Filtrado lineal con mipmaps en retratos y presentación del juego, texturas sin límite de tamaño y compresión sin pérdida. Los retratos disponen de más espacio (170 unidades antes de escala UI).
+- Se conservan los PNG originales: seis bases de 475×475 y catorce ilustraciones de 1254×1254. Esto corrige el muestreo y los componentes omitidos; no inventa detalle adicional ni convierte las bases en arte 4K.
+
+Validación: suite `cyber`, revisión nativa del equipo en 1080p y 720p al 150 %, combate contra Pikachu y comprobación de mipmaps/filtro. Evidencia en `docs/qa/qa-art-017.json`. Partida v10 intacta.
+
+## Historial 0.16 — Equipo y biblioteca adaptables (P1 parcial)
+
+- ~~Equipo con fichas nativas.~~ Retrato, PS y barra de salud, estado, implante, experiencia y líder. Incluye escuchar gritos, simulador, caja y selección de evoluciones, también las alternativas de Eevee.
+- ~~Biblioteca desplazable y controles escalables.~~ Selector de seis compañeros, cuatro ranuras equipadas y todas las técnicas conocidas sin paginación. Cada técnica muestra PP restantes, potencia y precisión.
+- ~~Reemplazo explícito con cancelación.~~ Elegir una técnica abre una pantalla propia para sustituir una de las cuatro ranuras. Cancelar no modifica nada; reequipar no recupera PP gastados.
+- ~~Navegación y pie fijo.~~ Volver permanece visible; Tab desplaza la lista hasta el control enfocado. Esc cancela/vuelve; 1–6 selecciona compañero en biblioteca y 1–4 elige ranura al reemplazar.
+
+Validación: suite `learning` y revisión nativa de 54 combinaciones (tres pantallas, seis tamaños solicitados y escalas 100/125/150 %), incluidos foco visible, pie fijo, botones, cancelación, conservación de PP y regreso al mapa. Evidencia en `docs/qa/qa-team-016.json`. No hubo errores de scripts; permanecen avisos existentes de certificados/recursos. Guardado v10 intacto.
+
+Pendiente de P1: mercados, caja, otros menús, diálogos e interiores. El nuevo arte del mapa y el audio completo siguen en P2/P3.
+
+## Historial 0.15 — Combate panorámico (P1 parcial)
+
+- ~~HUD de combate con controles nativos y escala 100/125/150 %.~~ PS, estados, calor, implante y experiencia legibles; botones de movimientos con PP, precisión y explicación al enfocar o pasar el cursor.
+- ~~Escenario adaptable al espacio disponible.~~ Criaturas con proporciones preservadas, vista propia de espaldas y anclajes sobre las sombras. Los efectos apuntan a las posiciones adaptadas.
+- ~~Cambio de equipo para seis criaturas.~~ Se bloquean compañeros debilitados/activos, movimientos sin PP y captura/huida contra entrenadores y guardianes. Se conserva Forcejeo cuando se agotan todos los PP.
+- ~~Teclado y foco de controles.~~ 1–4 para movimientos, 1–6 para cambio de compañero, Esc para volver, O para sobrecarga y V para ventilar. El ratón utiliza botones reales.
+
+Validación: `battle_ui` y regresión `tactics`; 54 combinaciones de formato, escala y menú con render real, más capturas de guardián y ataque. Datos en `docs/qa/qa-battle-015.json`. Persisten avisos de certificados/recursos al salir; no se observaron errores de scripts en estas pruebas. La partida conserva el formato v10.
+
+Pendiente: equipo fuera de combate, biblioteca, mercados, diálogos e interiores. P1 sigue abierta; arte del mapa y audio completo permanecen en P2/P3.
+
+## Historial 0.14 — Pantalla panorámica y ajustes (P1 parcial)
+
+- ~~Ventana panorámica y pantalla completa.~~ Base lógica 1280×720; ventana inicial 1600×900 ajustada al monitor. F11 alterna pantalla completa. La restauración de tamaño espera la transición nativa de macOS.
+- ~~Título, HUD exterior y ajustes adaptables.~~ El mundo aprovecha el ancho, conserva minimapa, objetivos y mensajes de radio. Los botones se reorganizan al aumentar la interfaz. Los menús clásicos y el combate conservan temporalmente 960×720 centrados mediante un adaptador; no se consideran migrados.
+- ~~Preferencias persistentes separadas de la partida.~~ F10 abre ajustes desde título/mapa: tamaño de ventana, interfaz 100/125/150 %, volumen general, mute y reducción de movimiento ambiental/cámara. El panel puede desplazarse; Volver permanece visible. M silencia.
+- ~~Render 3D al tamaño disponible.~~ El exterior usa la resolución física de su área visible; la UI se renderiza independientemente. La escala de interfaz todavía no amplía los textos internos de los menús heredados.
+
+Validación: suites `settings`, `field` y `presentation`; 18 combinaciones de formato/escala del HUD con render real, opciones al 150 %, retorno de pantalla completa, equipo de seis criaturas y batalla mediante adaptador. Se mantienen avisos existentes de certificados/recursos al salir; no hubo errores de scripts en estas comprobaciones.
+
+Muestra breve en Apple M5, GL Compatibility, ventana 1920×1080 y mundo 1872×846: 180 frames, mediana 7,538 ms y p95 13,65 ms. Es una referencia corta, no una garantía de rendimiento ni un recorrido de diez minutos. Datos en `docs/qa/benchmark-014.json`.
+
+Pendiente de P1: HUD de combate, menús/interiores adaptables, revisión exhaustiva de clics y navegación. La nueva música, mezcla por canales y expansión del mapa corresponden a fases posteriores. La partida sigue en formato v10.
+
+## Historial 0.13 — Red de auxilio
+
+- ~~Cadena de exploración en los tres distritos.~~ «Agua para los invisibles» repara una cisterna en Paleta; «La última entrega» recupera medicinas retenidas en la Brecha; «Nombres que no se borran» reconecta una antena en Cromo. Puedes resolverlas en cualquier orden.
+- ~~Tres protocolos de campo ligados al equipo.~~ Biosellado (Planta/Agua), Corte térmico (Fuego/Bicho/Acero) y Enlace fantasma (Eléctrico/Fantasma/Normal). Requieren un compañero consciente de nivel 6 o más; conocer el chip compatible también permite operar. No consumen PP ni ocupan ranuras de combate.
+- ~~Instalaciones 3D con estado persistente.~~ Cisterna, cargamento sellado y antena, con colisiones y marcadores en el minimapa. Ámbar indica pendiente; verde indica activa. La antena restaurada gira y emite luz.
+- ~~Recompensas únicas y efecto sobre el distrito.~~ Cada reparación entrega ₽180, una poción y reduce la corrupción en 20 puntos. De 85 a 65 elimina la bonificación de daño salvaje por red corrupta. Completar las tres entrega ₽500 adicionales y la licencia Enjambre reutilizable.
+- ~~Guardado transaccional v10.~~ Las reparaciones se guardan automáticamente. Si falla, se revierten créditos, pociones, licencia y estado del sitio. Cargar partidas anteriores no entrega recompensas ni marca reparaciones por error.
+
+**Cómo jugar:** pulsa **L** en el mapa para consultar la red. Busca el marcador ámbar, acércate y pulsa **E**. Paleta: (10,12); Brecha: (16,10); Cromo: (10,9). Selecciona un compañero compatible. Las operaciones exigen estar junto a la instalación; no se pueden ejecutar desde otro distrito ni desde interiores.
+
+Validación: suites `field`, `campaign`, `city` y `chips`, incluyendo recorrido accesible, nivel/PS, compatibilidad, fallo de guardado de la recompensa final, repetición, migración y los finales existentes. Revisión visual de las tres instalaciones antes y después de repararlas.
+
+Pendientes: Pikachu y las ocho espaldas restantes; herramientas de campo que abran nuevas rutas; más interiores y diálogos ramificados. Estos protocolos reparan instalaciones existentes, no añaden Surf/Corte ni mapas nuevos.
+
+## Historial 0.12 — Mercado neural y arenas por distrito
+
+- ~~Mercado de seis chips de combate reutilizables.~~ Pulso Cero (₽180), Refrigerante (₽180), Ignición (₽260), Paquete Fantasma (₽320), Acelerador Rail (₽360) y Micromáquinas (₽420). Los tres primeros están disponibles desde el inicio; Umbral/Rail requieren un guardián vencido y Enjambre requiere dos.
+- ~~Enseñanza por compatibilidad y cobertura de otros tipos.~~ Por ejemplo, Pikachu/Raichu pueden aprender Ignición de Plasma, de tipo Fuego. Cada licencia sirve para todos los compañeros compatibles; aprender abre la selección de ranura sin borrar la técnica anterior de la biblioteca. Reenseñar o reequipar no recupera PP.
+- ~~Compras y aprendizaje guardados con reversión ante fallos.~~ Si no se puede escribir la partida, no se pierden créditos ni se entrega la compra. Guardado v9 compatible con partidas anteriores, evolución y caja.
+- ~~Efectos secundarios en ataques con daño.~~ Quemadura, parálisis e interferencia se evalúan después de acertar y causar daño efectivo, respetando probabilidad, inmunidades, objetivo vivo y límites de cargas.
+- ~~Tres escenarios de combate animados.~~ Paleta: jardín de vidrio y vegetación; Brecha: intercambiador térmico, conductos y brasas; Cromo: servidores y holograma rotatorio. Plataformas iluminadas, suelo en perspectiva y reflejos. Conservan las vistas traseras y sus puntos de apoyo.
+
+Validación: `chips`, `learning` y `tactics` aprobadas. Se comprobaron transacciones fallidas, compras duplicadas, incompatibilidades, límites de PP, evolución, migración y aplicación real de daño más efecto secundario. Revisión visual del mercado, reemplazo de técnica y las tres arenas.
+
+**Cómo probar:** pulsa **J** mientras exploras, o entra en **Equipo → Técnicas → Mercado de chips**. Elige licencia y compañero, compra, enseña y selecciona la ranura. La licencia y el aprendizaje se guardan automáticamente; guarda con F5 al volver al mapa después de cambiar la ranura equipada. El mercado está bloqueado en batalla.
+
+El mercado implementa MT reutilizables con temática cyberpunk. Las MO de exploración, más misiones y el arte pendiente de la edición 0.11 continúan abiertos; esta versión no sustituye el Pikachu anterior ni completa las ocho espaldas faltantes.
+
+## Historial 0.11 — Vistas traseras (entrega parcial)
+
+- ~~Renderizar una ilustración trasera independiente para el compañero en batalla.~~ El rival y los menús conservan la vista frontal; las ilustraciones traseras no se reflejan horizontalmente ni reciben los implantes dibujados para el frente.
+- ~~Calcular el apoyo de cada vista sobre su sombra.~~ Frente y espalda usan pivotes separados según sus píxeles visibles.
+- ~~Crear e integrar 12 vistas traseras.~~ Bulbasaur, Venusaur, Charmeleon, Charizard, Squirtle, Wartortle, Vaporeon, Jolteon, Gastly, Gengar, Scyther y Scizor.
+- Pendiente: rediseñar el frente de Pikachu y completar las espaldas de Ivysaur, Charmander, Blastoise, Pikachu, Raichu, Eevee, Haunter y Porygon. La herramienta rechazó la generación de siete espaldas y el frente de Pikachu; Haunter falló por límite de uso. Estas ocho especies mantienen temporalmente la vista frontal reflejada anterior; no se consideran espaldas terminadas.
+
+Assets: `assets/creatures/back/`. Prompts, procedencia y resultados de las 20 solicitudes: `assets/rear_art_manifest.json`. Generados con `image_gen.imagegen`, referenciando las ilustraciones existentes. No cambia el formato de guardado.
+
+Validación: suites `rear`, `city` y `cyber` aprobadas; revisión visual de Squirtle, Charizard, Gengar y Scizor en combate. El apoyo trasero ignora brillos con alfa inferior al 20 % para evitar pies flotantes.
+
+Siguiente tras 0.12: completar el arte pendiente, añadir MO de exploración y nuevas misiones con interiores. Las MT ya se implementan mediante chips; los puntos abiertos permanecen sin tachar.
+
+## Historial 0.10 — Biblioteca de técnicas
+
+- ~~Aprendizaje de técnicas por nivel.~~ Las 20 formas desbloquean Láser de precisión en nivel 6, una técnica especial de gran potencia en nivel 10 y un ataque físico de afinidad en nivel 14. Cada familia tiene nombres propios: Descarga iónica, Enjambre de drones, Floración láser, Filo de tungsteno…
+- ~~Reemplazo y recuperación de movimientos.~~ Abre **P → TÉCNICAS DEL EQUIPO**, selecciona compañero y técnica, y elige una de las cuatro ranuras. **Esc** cancela sin cambios. Las técnicas retiradas permanecen en la biblioteca.
+- ~~PP persistentes por técnica.~~ Cambiar y volver a equipar no rellena PP. La clínica sí recupera los de las técnicas equipadas y las de reserva. No se puede cambiar la configuración durante el combate.
+- ~~Conservar técnicas al evolucionar, guardar y usar la caja.~~ Las técnicas conservan su identidad original; Scizor puede mantener los ataques Bicho aprendidos como Scyther y acceder a nuevas técnicas de Acero. Las partidas v0.9 conservan sus PS, estados, implantes y PP al migrar.
+- ~~Corregir el pie del menú de equipo.~~ Simulador, caja, técnicas y volver tienen botones separados, sin zonas de clic superpuestas.
+
+Guarda con **F5** al volver al mapa. Todavía no hay MT/MO ni objetos para enseñar técnicas: el hito general 3 permanece parcialmente abierto.
+
+Validación: suite `learning` (desbloqueos, cancelación, reemplazo, PP, curación, persistencia, evolución, caja y uso real en combate), más regresiones `tactics`, `cyber` y `campaign`. Todas usan partidas temporales.
+
+## Historial 0.9 — Aire para los que quedan
 
 
 - ~~Cuatro movimientos con PP y precisión para las 20 formas.~~ Placaje, técnica de afinidad, control y blindaje; la técnica de afinidad aumenta de potencia en nivel 8. Los sets son predeterminados: todavía no hay MT ni menú para aprender/reemplazar movimientos.
@@ -283,7 +381,7 @@ Hitos narrativos prioritarios (estado actualizado en v0.7):
 ### 🎲 Sistemas de juego
 - [ ] **1. Cálculo de daño completo** — stats por criatura (Ataque, Defensa, Especial, Velocidad), IVs/EVs, naturalezas y fórmula oficial en lugar de potencia plana.
 - [x] ~~**2. Movimientos con PP, precisión y efectos** — estados alterados (paralizado, quemado, dormido), cambios de estadística y críticos.~~ — **Completado en v0.9.**
-- [ ] **3. Set de 4 movimientos por criatura** — aprendizaje por nivel, olvido/reemplazo y MT/MO. **Parcial v0.9:** cuatro técnicas por forma y mejora por nivel; faltan aprendizaje configurable, reemplazo y MT/MO.
+- [ ] **3. Set de 4 movimientos por criatura** — aprendizaje por nivel, olvido/reemplazo y MT/MO. **Parcial v0.12:** ~~cuatro técnicas por forma, aprendizaje por nivel, reemplazo/recuperación y MT reutilizables mediante chips~~; faltan MO de exploración.
 - [ ] **4. Tabla de tipos completa** — 18 tipos con inmunidades, dobles debilidades y STAB.
 - [x] ~~**5. Cambio de criatura en combate** — cambiar de compañero como acción de turno y arrastre de experiencia.~~ — **Completado en v0.9**, con reparto entre participantes vivos.
 - [ ] **6. Curva de experiencia y niveles reales** — reparto de EXP, subida de nivel con mensaje y aumento de estadísticas.
@@ -294,7 +392,7 @@ Hitos narrativos prioritarios (estado actualizado en v0.7):
 - [ ] **9. Mapa extendido con múltiples rutas y pueblos** — más allá de la zona inicial, con transiciones fluidas.
 - [ ] **10. Herramientas de edición de escenarios 3D** — sustituye el planteamiento inicial de migrar a `TileMap`: ampliar escenas y módulos editables, con colocación de colisiones y puntos de interacción en el editor. La presentación actual ya es 3D.
 - [ ] **11. Interiores y warps** — casas, centros de curación, tiendas y lugares de campaña como escenas independientes. **Parcial v0.9:** clínica y archivo de Paleta visitables; faltan los otros distritos.
-- [ ] **12. NPCs con diálogos ramificados y misiones** — árbol de conversación, banderas de historia y recompensas. **Parcial v0.9:** Sena/Oak, una misión completa y recompensa persistente; faltan más cadenas y decisiones ramificadas.
+- [ ] **12. NPCs con diálogos ramificados y misiones** — árbol de conversación, banderas de historia y recompensas. **Parcial v0.13:** ~~misión de Sena/Oak y cadena Red de auxilio en los tres distritos con recompensas persistentes~~; faltan decisiones ramificadas y más diálogos.
 - [ ] **13. Ampliar la campaña de NEXUS** — extender el arco entre los tres guardianes existentes con misiones de distrito y consecuencias visibles. Los guardianes y núcleos sustituyen el diseño inicial de gimnasios y medallas; ya existen tres finales.
 - [ ] **14. Zonas con encuentros por bioma** — tablas de aparición por ruta, hora y rareza.
 - [ ] **15. Ciclo día/noche y clima con efecto jugable** — que la ambientación afecte encuentros y combate.

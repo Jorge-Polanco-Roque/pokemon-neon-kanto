@@ -35,3 +35,53 @@ Las pruebas de presentación comprueban la construcción de los tres distritos, 
 `clinic.tscn` y `archive.tscn` son escenas independientes de SubViewport, con `interior_world.gd` como presentación común. Se instancian sólo al entrar y se liberan al salir. El controlador es dueño de las colisiones y el estado de misión; no hay encuentros aleatorios dentro. La misión mantiene cinco estados, exige presencia junto a los personajes/relé, y revierte dinero, objetos y finalización si falla la escritura atómica.
 
 Limitaciones: sets de movimientos predeterminados; sin IV/EV/naturalezas, sin MT, sin tabla completa de 18 tipos; interiores aún construidos por geometría en código; una misión secundaria completa. La herencia del controlador sigue siendo deuda técnica para una futura separación en componentes.
+
+
+## Versión 0.10: identidad y aprendizaje de técnicas
+
+Cada criatura guarda `techniques` (cuatro IDs estables), `known_techniques` (biblioteca) y `technique_pp` (PP de reserva). `pp` sigue siendo el contador de las cuatro ranuras usado por el controlador de combate. Antes de reemplazar, normalizar o curar, se sincronizan los contadores equipados; así no se recuperan PP al alternar técnicas. La migración asigna IDs a los cuatro movimientos anteriores conservando sus PP.
+
+Los desbloqueos se incorporan al entrenar, ganar niveles, evolucionar y abrir el editor. Las técnicas se definen por ID y tipo original; una evolución no sustituye silenciosamente el tipo de los movimientos conocidos. La interfaz de biblioteca sólo puede abrirse fuera del combate. El guardado v8 serializa estos campos dentro de cada criatura, tanto en equipo como en caja.
+
+## Edición 0.12
+
+`NeuralChips` define licencias, costes, desbloqueos y compatibilidad. `CombatRules` conserva identidad, PP y datos de los seis ataques; también resuelve efectos secundarios mediante una tirada explícita. `campaign_game.gd` controla la tienda, enseñanza y transacciones de guardado con reversión. Las licencias viven en el guardado v9 y los ataques aprendidos viajan con cada criatura.
+
+`BattleArena` dibuja tres fondos por distrito, usando exclusivamente el reloj para animación; nunca consume el generador aleatorio del combate. Las plataformas respetan los anclajes (716,291) y (238,455).
+
+## Edición 0.13
+
+`FieldProtocols` define posiciones y compatibilidad de tres instalaciones. El controlador de campaña valida proximidad, nivel y PS, aplica recompensas y guarda con reversión completa si falla. `restored_sites` se filtra al cargar el guardado v10. La restauración reduce corrupción sin alterar las decisiones de núcleo ni sus finales.
+
+`modern_world.build_district` recibe estados restaurados como argumento opcional y construye las instalaciones. Al reparar/cargar/reiniciar se invalida la escena para reconstruir su estado visual. La presentación no modifica progreso ni recompensas.
+
+## Edición 0.14 — primera entrega P1
+
+`SettingsService` valida y persiste preferencias en `user://neon_settings.cfg` mediante archivo temporal. No escribe partidas. Aplica volumen/mute en Master y reestablece la ventana después de la transición de pantalla completa de macOS; una revisión invalida restauraciones diferidas antiguas.
+
+`ScreenRoot` es un CanvasLayer separado: controles nativos para título, ajustes y HUD exterior, y adaptador uniforme centrado para las pantallas heredadas. La transformación del Node2D conserva el uso de `get_global_mouse_position()` en coordenadas locales. `WorldMinimap` mantiene marcadores de jugador, terminal y auxilio. El SubViewport exterior recibe dimensiones físicas del área de mapa; interiores y combate siguen pendientes de migración. Los ajustes no se abren durante combate y la escala 100/125/150 % sólo afecta a la UI nueva.
+
+
+## Edición 0.15 — presentación de combate
+
+`BattleHUD` es un Control bajo `ScreenRoot`. Contenedores distribuyen tarjetas de estado, área de escenario, registro desplazable y cuadrícula de acciones. Los botones comparten despacho con atajos y respetan bloqueo de turnos; la lógica de combate sigue en el controlador. El HUD no consume RNG ni modifica guardados.
+
+`draw_battle_scene()` separa arena/criaturas/efectos del HUD heredado. `battle_point()` proyecta anclajes y trayectorias al ancho lógico del área de escenario; su transformación uniforme conserva proporciones de sprites y pivotes. Al salir del combate se restaura el adaptador de las pantallas restantes. El fondo de arena amplía su geometría horizontalmente; la escala de texto no deforma criaturas.
+
+La suite `battle_ui` verifica restricciones, Forcejeo, teclado, cambio de equipo con coste real de turno y contacto de pivotes. La revisión nativa comprueba 54 layouts; la matriz no sustituye una revisión completa de ratón/gamepad ni de todos los nombres personalizados.
+
+
+## Edición 0.16 — equipo y biblioteca
+
+`TeamScreen` bajo `ScreenRoot` presenta `party` y `techniques`, con un estado de reemplazo exclusivo cuando existe `pending_technique`. Usa ScrollContainer con seguimiento de foco y un pie fuera del área desplazable. Los controles se reconstruyen cuando cambian estado, datos, resolución o escala, restaurando el foco por identificador de acción cuando sigue disponible.
+
+Todas las mutaciones pasan por `game.action`; las reglas de evolución, entrenamiento, aprendizaje y PP se conservan en sus controladores. La biblioteca muestra los PP equipados directamente y los PP de reserva de `technique_pp`. No modifica la partida para dibujar. Los menús de caja y chips siguen usando el adaptador al abrirse desde estos controles.
+
+La revisión gráfica de 0.16 activa señales de botones reales y atajos, valida reemplazo/cancelación y recorre foco por cada acción habilitada. Comprueba 54 configuraciones de layout y que los controles enfocados entren en el área desplazable. No constituye una revisión de mando ni de todas las combinaciones de nombres personalizados.
+
+
+## Edición 0.17 — una composición compartida para criaturas
+
+`CyberAugmentation.draw()` contiene la geometría mecánica que antes vivía en `cyber_game.gd`. El combate delega en ese recurso y `CreaturePortrait` lo invoca desde su propio `_draw()`, después del PNG base. Así las fichas no pierden la capa cibernética. La presentación no instancia un segundo controlador ni renderiza retratos a una textura intermedia de baja resolución.
+
+Las ilustraciones conservan sus archivos fuente y compresión sin pérdida. Sus importaciones generan mipmaps; el controlador y los retratos usan `TEXTURE_FILTER_LINEAR_WITH_MIPMAPS`. Las vistas traseras con arte propio siguen evitando la superposición frontal, tal como antes.
