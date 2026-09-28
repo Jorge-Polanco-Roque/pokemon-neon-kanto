@@ -1,6 +1,36 @@
 > **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; siguen mercados, diálogos e interiores.
 
-## Edición 0.17 — Restauración del arte cibernético y filtrado
+## Edición 0.20 — Ambientes más oscuros y presentes
+
+- ~~Cinco ambientes reforzados.~~ Drones graves con batimientos, intervalos disonantes, resonancias lejanas y ecos metálicos. Se conservan las identidades por ubicación, con entradas progresivas.
+- ~~Mayor presencia.~~ Pico de las fuentes de -11,06 dBFS y reproducción a -4 dB: aproximadamente +6,9 dB respecto a 0.19 al mismo volumen de usuario. El deslizador Ambientes sigue disponible en F10.
+- ~~Loops de 24 segundos.~~ Síntesis periódica y colas circulares, sin fade de cierre ni silencio añadido. Verificación de los cinco saltos al inicio en Godot. Las pistas de batalla permanecen intactas.
+
+Validación: suite `audio`, métricas de las fuentes y captura nativa en `docs/qa/qa-ambience-020.json`. Las muestras de Paleta y Brecha contienen dos vueltas seguidas para escuchar el empalme.
+
+## Historial 0.19 — Ambientes cibernéticos por ubicación
+
+- ~~Cinco ambientes originales y programáticos.~~ Paleta: viento/goteos; Brecha: maquinaria; Cromo: señales electrónicas; clínica: ventilación/pulsos médicos; archivo: servidores. Loops estéreo de 24 segundos con ruido periódico y eventos de cola circular.
+- ~~Transiciones de ambiente.~~ Fundidos de 1,2 segundos al cambiar de ubicación; el ambiente se retira al entrar en combate y regresa al mundo. Los menús mantienen la ubicación; título/prólogo/evolución no añaden esta capa. Se pausa al perder foco y se atenúa durante gritos.
+- ~~Control independiente.~~ F10 → Ambientes, persistente y subordinado al mute general. Las músicas de batalla aprobadas permanecen sin cambios.
+
+Generador: `python3 tools/audio/build_ambience.py` (NumPy). Métricas en `assets/audio/ambience/manifest.json`. Suite `audio` ampliada y revisión nativa de cinco loops, entrada/salida de combate y mute, con captura del bus Ambience.
+
+P3 sigue abierta: efectos definitivos, música específica de título/derrota/captura, prioridades de sonidos y escucha crítica de la mezcla completa.
+
+## Historial 0.18 — Música chiptune cibernética
+
+- ~~Loops de salvaje y guardián comprobados en reproducción nativa.~~ Versiones completas de 49,23 s y 43,64 s; continuidad PCM y salto del reproductor verificados. Las muestras MP3 iniciales tenían un cierre de demostración, ausente en el juego.
+
+- ~~Banda musical programática inicial.~~ Cinco composiciones originales: exploración, combate salvaje, entrenador, guardián y victoria. Dos voces de pulso, bajo FM, percusión de ruido y ecos; referencias y método en [Dirección musical](docs/audio/DIRECCION_MUSICAL.md).
+- ~~Selección y fundidos por estado.~~ Dos reproductores como máximo, fundidos de 650 ms, loops y fanfarria de victoria. La música se atenúa durante gritos y se pausa al perder el foco.
+- ~~Mezcla independiente persistente.~~ F10: música, efectos, gritos y volumen general. M conserva silencio al cambiar de estado.
+
+Generador reproducible: `python3 tools/audio/build_soundtrack.py` (NumPy). Audio PCM estéreo 44,1 kHz. Pruebas `audio` y `settings`; captura nativa y métricas en `docs/qa/qa-audio-018.json` y `assets/audio/music/manifest.json`. Persisten avisos existentes de certificados/recursos al salir; guardado v10 sin cambios.
+
+P3 sigue parcial: faltan ambientes, efectos finales y escucha crítica de la mezcla completa. Esta entrega no usa grabaciones ni melodías transcritas de Pokémon.
+
+## Historial 0.17 — Restauración del arte cibernético y filtrado
 
 - ~~Implantes restaurados en las fichas.~~ El menú anterior mostraba sólo el PNG base y omitía la geometría cibernética. `CreaturePortrait` ahora compone el retrato con el mismo dibujado mecánico que usa el combate para Pikachu, Charizard, Blastoise, Raichu, Haunter y Porygon.
 - ~~Escalado de ilustraciones corregido.~~ Filtrado lineal con mipmaps en retratos y presentación del juego, texturas sin límite de tamaño y compresión sin pérdida. Los retratos disponen de más espacio (170 unidades antes de escala UI).

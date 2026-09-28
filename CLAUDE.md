@@ -184,10 +184,10 @@ Salida: una porción pequeña con el acabado objetivo y evidencia visual/sonora.
 Dependencia: infraestructura P2; independiente de la expansión de mapas.
 
 - [ ] Construir catálogo de eventos y assets con procedencia; reemplazar pitidos temporales del flujo principal.
-- [ ] Ambientes, música y transiciones por estado; interiores, pausa, pérdida de foco y regreso al mundo.
+- [ ] Ambientes, música y transiciones por estado; interiores, pausa, pérdida de foco y regreso al mundo. **Parcial 0.18:** ~~cinco composiciones, fundidos, victoria, pausa musical sin foco y regreso al mundo~~; 0.19 añade ~~ambientes propios de tres distritos y dos interiores, fundidos y retirada al entrar en combate~~; quedan revisión de pausa general y mezcla completa.
 - [ ] Revisar los 20 gritos y efectos de combate con prioridad y control de repetición.
-- [ ] Mezcla por buses, volumen persistente y mute real; un estado nuevo no debe reactivar canales silenciados.
-- [ ] Captura de audio de un recorrido completo y medición de picos/loops; escucha en auriculares y altavoces.
+- [x] ~~Mezcla por buses, volumen persistente y mute real; un estado nuevo no debe reactivar canales silenciados.~~ 0.18: Music/SFX/Cries, Master, preferencias separadas y pruebas de mute durante transiciones. 0.19 añade Ambience con volumen independiente.
+- [ ] Captura de audio de un recorrido completo y medición de picos/loops; escucha en auriculares y altavoces. **Parcial 0.18:** ~~métricas de las cinco pistas y captura nativa de transiciones musicales~~; falta mezcla completa con efectos y escucha crítica.
 
 Salida: título → exploración → interior → combate → victoria → exploración sin cortes, duplicados ni clipping; controles independientes comprobados.
 
@@ -283,6 +283,9 @@ Primera entrega 0.14 completada: ajustes persistentes, ventana panorámica ajust
 
 Registro de entregas del plan:
 
+- 2026-09-28 — 0.20 / ambiente solicitado: mayor presencia (+6,9 dB de pico al mismo ajuste), drones disonantes y ecos circulares; loops preservados, sin cambios en batallas.
+- 2026-09-28 — 0.19 / audio: cinco ambientes periódicos, bus independiente, transición por distrito/interior y retirada en combate. Música existente preservada.
+- 2026-09-28 — 0.18 / audio solicitado: composición programática original con referencias de batalla Pokémon, cinco pistas, buses y fundidos. Se adelanta este bloque de P3 por petición del usuario; P1/P2 no se consideran completadas.
 - 2026-09-27 — 0.17 / corrección visual: restaurada la capa cibernética compartida en retratos de seis especies; filtrado lineal/mipmaps y PNG originales preservados. No avanza fases de arte nuevo.
 - 2026-09-27 — 0.16 / P1 equipo: suite `learning` y 54 layouts nativos, foco/desplazamiento, botones y reemplazo sin recarga de PP; evidencia en `docs/qa/qa-team-016.json`.
 - 2026-09-27 — 0.15 / P1 combate: suites `battle_ui` y `tactics`; revisión gráfica de 54 layouts, guardianes y efectos; informe en `docs/qa/qa-battle-015.json`. P1 permanece abierta.

@@ -28,6 +28,8 @@ var radio_seconds = 0.0
 var radio_text = ""
 var campaign_save_error = ""
 var screen_root
+var music_director
+var ambience_director
 var modern_view: SubViewport
 var interior_view: SubViewport
 var interior_id=""
@@ -52,6 +54,12 @@ func _ready():
     event.physical_keycode=code
     InputMap.action_add_event(action_name,event)
  super._ready()
+ music_director=preload("res://scripts/audio/music_director.gd").new()
+ add_child(music_director)
+ music_director.setup(self)
+ ambience_director=preload("res://scripts/audio/ambience_director.gd").new()
+ add_child(ambience_director)
+ ambience_director.setup(self)
  if DisplayServer.get_name()!="headless":
   modern_view=preload("res://scenes/world/modern_world.tscn").instantiate()
   add_child(modern_view)
@@ -374,6 +382,7 @@ func end_battle():
  active_warden=-1
 
 func win_battle():
+ if music_director: music_director.result()
  if air_drone_battle:
   air_drone_battle=false
   await super.win_battle()
@@ -537,7 +546,7 @@ func _draw():
 func draw_title():
  super.draw_title()
  box(Rect2(55,670,450,30),Color("0b1324"))
- label_at("EDICIÓN 0.17 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
+ label_at("EDICIÓN 0.20 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
 
 func draw_world():
  if interior_id!="":

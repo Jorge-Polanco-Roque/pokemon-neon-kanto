@@ -1,7 +1,7 @@
 extends RefCounted
 const PATH="user://neon_settings.cfg"
 var path=PATH
-var values={"fullscreen":false,"window_size":Vector2i(1600,900),"ui_scale":1.0,"volume":0.8,"muted":false,"reduced_motion":false}
+var values={"fullscreen":false,"window_size":Vector2i(1600,900),"ui_scale":1.0,"volume":0.8,"music_volume":0.75,"ambience_volume":0.6,"effects_volume":0.8,"cries_volume":0.85,"muted":false,"reduced_motion":false}
 func load_settings():
  var cfg=ConfigFile.new()
  if cfg.load(path)!=OK: return
@@ -10,6 +10,7 @@ func load_settings():
   if typeof(value)==typeof(values[key]): values[key]=value
  values.ui_scale=clampf(values.ui_scale,1.0,1.5)
  values.volume=clampf(values.volume,0.0,1.0)
+ for key in ["music_volume","effects_volume","cries_volume","ambience_volume"]: values[key]=clampf(values[key],0.0,1.0)
  values.window_size=Vector2i(clampi(values.window_size.x,1280,3840),clampi(values.window_size.y,720,2160))
 func save_settings()->bool:
  var cfg=ConfigFile.new()
@@ -17,6 +18,13 @@ func save_settings()->bool:
  if cfg.save(path+".tmp")!=OK: return false
  return DirAccess.rename_absolute(ProjectSettings.globalize_path(path+".tmp"),ProjectSettings.globalize_path(path))==OK
 func apply_audio():
+ preload("res://scripts/audio/music_director.gd").ensure_buses()
+ var channels={"Music":"music_volume","SFX":"effects_volume","Cries":"cries_volume","Ambience":"ambience_volume"}
+ for bus in channels:
+  var index=AudioServer.get_bus_index(bus)
+  var value=float(values[channels[bus]])
+  AudioServer.set_bus_volume_db(index,linear_to_db(maxf(.0001,value)))
+  AudioServer.set_bus_mute(index,value<=0)
  AudioServer.set_bus_volume_db(0,linear_to_db(maxf(.0001,values.volume)))
  AudioServer.set_bus_mute(0,values.muted or values.volume<=0)
 func fitted_window_size(available:Vector2i)->Vector2i:

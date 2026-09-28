@@ -1,0 +1,19 @@
+{
+  "capture_seconds": 16.352,
+  "mute_preserved": true,
+  "native_playback_advances": true,
+  "route": [
+    "world",
+    "wild",
+    "trainer",
+    "warden",
+    "victory",
+    "world"
+  ],
+  "captured_music_bus": {
+    "peak_dbfs": -10.52,
+    "rms_dbfs": -23.77,
+    "nonzero_samples": 1496864,
+    "clipped_samples": 0
+  }
+}

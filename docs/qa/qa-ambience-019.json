@@ -1,0 +1,16 @@
+{
+  "captured_seconds": 15.8826666666667,
+  "combat_silence": true,
+  "focus_pause_disabled_in_harness": true,
+  "mute_preserved": true,
+  "native_loops_checked": [
+    "paleta",
+    "brecha",
+    "cromo",
+    "clinic",
+    "archive"
+  ],
+  "world_return": true,
+  "capture_peak_dbfs": -22.51,
+  "clipped_samples": 0
+}

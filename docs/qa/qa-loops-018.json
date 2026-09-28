@@ -1,0 +1,24 @@
+[
+  {
+    "track": "wild",
+    "frames_per_loop": 2171077,
+    "sample_rate": 44100,
+    "seconds": 49.23077097505669,
+    "loop_begin": 0,
+    "loop_end_exclusive": 2171077,
+    "join_delta_pcm": 0,
+    "inserted_silence_frames": 0,
+    "demo_cycles": 2
+  },
+  {
+    "track": "warden",
+    "frames_per_loop": 1924364,
+    "sample_rate": 44100,
+    "seconds": 43.636371882086166,
+    "loop_begin": 0,
+    "loop_end_exclusive": 1924364,
+    "join_delta_pcm": 0,
+    "inserted_silence_frames": 0,
+    "demo_cycles": 2
+  }
+]

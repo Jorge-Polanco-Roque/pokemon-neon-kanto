@@ -1,0 +1,56 @@
+{
+  "provenance": "Original periodic synthesis, seeded noise; no recordings or external samples.",
+  "sample_rate": 44100,
+  "tracks": [
+    {
+      "key": "paleta",
+      "seconds": 24,
+      "frames": 1058400,
+      "peak_dbfs": -11.06,
+      "join_step": 0.003034431318267597,
+      "adjacent_step_p999": 0.014989947319317113,
+      "clipped_samples": 0,
+      "rms_dbfs": -22.79
+    },
+    {
+      "key": "brecha",
+      "seconds": 24,
+      "frames": 1058400,
+      "peak_dbfs": -11.06,
+      "join_step": 0.0015177308402082451,
+      "adjacent_step_p999": 0.00831423002931201,
+      "clipped_samples": 0,
+      "rms_dbfs": -23.86
+    },
+    {
+      "key": "cromo",
+      "seconds": 24,
+      "frames": 1058400,
+      "peak_dbfs": -11.06,
+      "join_step": 0.004893779802061356,
+      "adjacent_step_p999": 0.01299169676943369,
+      "clipped_samples": 0,
+      "rms_dbfs": -23.64
+    },
+    {
+      "key": "clinic",
+      "seconds": 24,
+      "frames": 1058400,
+      "peak_dbfs": -11.06,
+      "join_step": 0.0011187021738093897,
+      "adjacent_step_p999": 0.008827931945175067,
+      "clipped_samples": 0,
+      "rms_dbfs": -21.77
+    },
+    {
+      "key": "archive",
+      "seconds": 24,
+      "frames": 1058400,
+      "peak_dbfs": -11.06,
+      "join_step": 0.0034912781750745317,
+      "adjacent_step_p999": 0.009366159019160674,
+      "clipped_samples": 0,
+      "rms_dbfs": -22.87
+    }
+  ]
+}

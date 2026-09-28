@@ -85,3 +85,18 @@ La revisión gráfica de 0.16 activa señales de botones reales y atajos, valida
 `CyberAugmentation.draw()` contiene la geometría mecánica que antes vivía en `cyber_game.gd`. El combate delega en ese recurso y `CreaturePortrait` lo invoca desde su propio `_draw()`, después del PNG base. Así las fichas no pierden la capa cibernética. La presentación no instancia un segundo controlador ni renderiza retratos a una textura intermedia de baja resolución.
 
 Las ilustraciones conservan sus archivos fuente y compresión sin pérdida. Sus importaciones generan mipmaps; el controlador y los retratos usan `TEXTURE_FILTER_LINEAR_WITH_MIPMAPS`. Las vistas traseras con arte propio siguen evitando la superposición frontal, tal como antes.
+
+## Edición 0.18 — música programática y mezcla
+
+`tools/audio/build_soundtrack.py` renderiza cinco partituras originales a PCM estéreo con NumPy. La generación es previa a la ejecución y su ruido tiene semilla independiente. `MusicDirector` carga las pistas, configura loops y usa dos AudioStreamPlayer con envolventes lineales de 650 ms; un cambio rápido reutiliza un slot y no acumula tweens/reproductores. No consume el RNG de encuentros o combate.
+
+El controlador de campaña notifica victoria, mientras el director resuelve los demás estados a partir de modo, entrenador y guardián. Los gritos atenúan la música; perder foco pausa ambos reproductores. Buses Music/SFX/Cries envían a Master; SettingsService crea buses de forma idempotente y persiste niveles individuales con valores por defecto para preferencias antiguas. Ninguna transición del director modifica mute/volumen de Master.
+
+`audio_test.gd` verifica selección de temas, loops, fanfarria, buses y persistencia. La QA nativa captura el bus Music antes de Master para medir transiciones sin reproducir sonido en la sesión de prueba. El catálogo de ambientes/efectos de P3 permanece pendiente.
+
+
+## Edición 0.19 — ambientes independientes
+
+`build_ambience.py` sintetiza ruido periódico mediante FFT, zumbidos de ciclos enteros y eventos con colas circulares. No usa samples ni el RNG del juego. Cinco WAV PCM de 24 segundos alimentan `AmbienceDirector`, con dos reproductores, fundidos de 1,2 segundos y bus Ambience → Master. La selección usa distrito e interior; combate/título/prólogo/evolución retiran la capa. La música no se sustituye ni se modifica.
+
+SettingsService conserva un nivel `ambience_volume` por defecto de 0,6 para ajustes antiguos. La suite de audio comprueba selección, silencio en combate, retorno, persistencia y mute. La QA nativa verifica los cinco empalmes reproduciendo desde el final real y graba el bus de ambiente antes de Master.

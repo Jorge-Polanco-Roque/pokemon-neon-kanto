@@ -95,7 +95,7 @@ func build_title():
  column.custom_minimum_size.x=620
  column.add_theme_constant_override("separation",18)
  center.add_child(column)
- label(column,"NEÓN KANTO / EDICIÓN 0.17",18).modulate=Color("64dfd3")
+ label(column,"NEÓN KANTO / EDICIÓN 0.20",18).modulate=Color("64dfd3")
  label(column,"La deuda del aire",48)
  var description=label(column,"Un mundo roto. Un compañero. Una señal que todavía puede responder.",20)
  description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -253,6 +253,17 @@ func build_settings():
  volume.custom_minimum_size.y=32
  column.add_child(volume)
  volume.value_changed.connect(func(value):settings.values.volume=value/100;commit())
+ for channel in [["Música","music_volume"],["Ambientes","ambience_volume"],["Efectos","effects_volume"],["Gritos Pokémon","cries_volume"]]:
+  label(column,channel[0],20)
+  var slider=HSlider.new()
+  var key:String=channel[1]
+  slider.min_value=0
+  slider.max_value=100
+  slider.step=1
+  slider.value=settings.values[key]*100
+  slider.custom_minimum_size.y=32
+  column.add_child(slider)
+  slider.value_changed.connect(func(value):settings.values[key]=value/100;commit())
  var mute=CheckButton.new()
  mute.text="Silenciar [M]"
  mute.button_pressed=settings.values.muted
