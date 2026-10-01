@@ -69,14 +69,16 @@ func rebuild():
    parent.remove_child(child)
    child.queue_free()
  buttons_by_action={}
- if game.mode=="party": build_party()
- elif game.pending_technique!="": build_replacement()
- else: build_library()
+ build_contents()
  if buttons_by_action.has(previous_action) and not buttons_by_action[previous_action].disabled:
   buttons_by_action[previous_action].grab_focus()
  else:
   for control in buttons_by_action.values():
    if not control.disabled: control.grab_focus(); break
+func build_contents():
+ if game.mode=="party": build_party()
+ elif game.pending_technique!="": build_replacement()
+ else: build_library()
 func build_party():
  note(content,"EQUIPO / COMPAÑEROS AUMENTADOS",true)
  note(content,"%d / 6 compañeros · ₽%d · El simulador entrena al líder. Guarda con F5 al volver al mapa."%[game.party.size(),game.money])

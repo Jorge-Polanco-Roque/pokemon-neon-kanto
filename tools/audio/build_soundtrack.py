@@ -54,6 +54,9 @@ def render(key,bpm,root,bars,energy,variant):
   base=root+shift
   phrase=PHRASES[(bar//2+variant)%4]
   if key=='victory': phrase=[0,4,7,12,7,12,16,19]*2
+  if key=='title':
+   add(tone(base+12,beat*3.6,'bell'),bar*4*beat,.045,-.4,True)
+   add(tone(base+19,beat*3.6,'bell'),(bar*4+.5)*beat,.028,.4,True)
   # Rhythmic lead with short rests, answer phrases, and second-half variation.
   for step in range(8):
    pitch=phrase[(bar%2)*8+step]
@@ -88,6 +91,6 @@ def render(key,bpm,root,bars,energy,variant):
   w.setnchannels(2);w.setsampwidth(2);w.setframerate(SR);w.writeframes(pcm.tobytes())
  return {'key':key,'bpm':bpm,'bars':bars,'seconds':frames/SR,'peak_dbfs':round(20*np.log10(np.max(np.abs(mix))),2),'rms_dbfs':round(20*np.log10(np.sqrt(np.mean(mix**2))),2),'loop':key!='victory','clipped_samples':int(np.sum(np.abs(pcm.astype(np.int32))>=32767)),'seam_step':float(np.max(np.abs(mix[0]-mix[-1])))}
 if __name__=='__main__':
- tracks=[render(*args) for args in [('world',100,45,16,.4,0),('wild',156,45,32,.85,0),('trainer',164,47,32,.95,1),('warden',176,42,32,1.0,2),('victory',136,48,4,.6,3)]]
+ tracks=[render(*args) for args in [('title',84,42,16,.28,2),('world',100,45,16,.4,0),('wild',156,45,32,.85,0),('trainer',164,47,32,.95,1),('warden',176,42,32,1.0,2),('victory',136,48,4,.6,3)]]
  (OUT/'manifest.json').write_text(json.dumps({'version':1,'provenance':'Original algorithmic score; synthesized oscillators and seeded noise; no third-party recordings, MIDI or samples.','sample_rate':SR,'tracks':tracks},indent=2)+'\n')
  print(json.dumps(tracks,indent=2))

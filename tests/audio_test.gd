@@ -7,6 +7,10 @@ func run_audio_tests():
  party=[mon(7,14)]
  var director=music_director
  director.set_process(false)
+ mode="title"
+ assert(director.desired_track()=="title")
+ mode="starter"
+ assert(director.desired_track()=="title")
  mode="world"
  assert(director.desired_track()=="world")
  start_battle(mon(25,10))
@@ -47,6 +51,7 @@ func run_audio_tests():
   assert(stream.stereo and stream.mix_rate==44100)
   assert(stream.loop_mode==(AudioStreamWAV.LOOP_DISABLED if key=="victory" else AudioStreamWAV.LOOP_FORWARD))
   assert(stream.get_length()>7)
+  assert(stream.loop_begin==0 and stream.loop_end==roundi(stream.get_length()*stream.mix_rate))
  assert(director.players.size()==2)
  assert(audio.bus=="SFX" and cry_player.bus=="Cries")
  var ambience=ambience_director

@@ -50,6 +50,9 @@ func sync_player(cell:Vector2,direction:Vector2,moving:bool):
  player.set_pose(Vector3(cell.x+.5,0,cell.y+.5),direction,moving)
  focus=Vector3(8,0,6)
 func update_camera(delta:float):
+ # Preserve vertical framing as viewport aspect changes; widen the visible room.
+ camera.keep_aspect=Camera3D.KEEP_HEIGHT
+ camera.size=maxf(12.8,19.0*float(size.y)/maxf(1.0,float(size.x)))
  camera.position=focus+Vector3(5.5,12.5,15)
  camera.look_at(focus,Vector3.UP)
 

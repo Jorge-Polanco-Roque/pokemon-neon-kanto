@@ -16,3 +16,7 @@ Thumbs.db
 
 # Local tooling (machine-specific)
 .claude/
+
+# Python cache
+__pycache__/
+*.pyc

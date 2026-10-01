@@ -4,6 +4,17 @@
   "sample_rate": 44100,
   "tracks": [
     {
+      "key": "title",
+      "bpm": 84,
+      "bars": 16,
+      "seconds": 45.714285714285715,
+      "peak_dbfs": -6.74,
+      "rms_dbfs": -18.38,
+      "loop": true,
+      "clipped_samples": 0,
+      "seam_step": 0.0
+    },
+    {
       "key": "world",
       "bpm": 100,
       "bars": 16,

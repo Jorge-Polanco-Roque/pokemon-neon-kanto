@@ -17,7 +17,7 @@ static func ensure_buses():
 func setup(controller):
  game=controller
  ensure_buses()
- for key in ["world","wild","trainer","warden","victory"]:
+ for key in ["title","world","wild","trainer","warden","victory"]:
   var stream=load("res://assets/audio/music/"+key+".wav").duplicate()
   stream.loop_mode=AudioStreamWAV.LOOP_DISABLED if key=="victory" else AudioStreamWAV.LOOP_FORWARD
   stream.loop_begin=0
@@ -39,6 +39,8 @@ func desired_track()->String:
   victory_left=0
   if game.active_warden>=0 or game.trainer=="BROCK": return "warden"
   return "wild" if game.trainer=="" else "trainer"
+ if game.mode in ["title","starter","prologue"]: return "title"
+ if game.mode=="settings" and game.screen_root and game.screen_root.return_mode=="title": return "title"
  if victory_left>0: return "victory"
  return "world"
 func request(key:String):

@@ -18,6 +18,11 @@ var last_layout=Vector2.ZERO
 var last_mode=""
 var battle_hud
 var team_screen
+var exploration_screen
+var dialogue_screen
+var minimap
+var exit_button
+var commerce_screen
 var settings_note:Label
 var theme_resource:Theme
 func setup(controller):
@@ -58,6 +63,15 @@ func setup(controller):
  team_screen=preload("res://scripts/ui/team_screen.gd").new()
  root.add_child(team_screen)
  team_screen.setup(game,self)
+ commerce_screen=preload("res://scripts/ui/commerce_screen.gd").new()
+ root.add_child(commerce_screen)
+ commerce_screen.setup(game,self)
+ dialogue_screen=preload("res://scripts/ui/dialogue_screen.gd").new()
+ root.add_child(dialogue_screen)
+ dialogue_screen.setup(game,self)
+ exploration_screen=preload("res://scripts/ui/exploration_screen.gd").new()
+ root.add_child(exploration_screen)
+ exploration_screen.setup(game,self)
  update_layout()
 func full(node:Control):
  node.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -95,7 +109,7 @@ func build_title():
  column.custom_minimum_size.x=620
  column.add_theme_constant_override("separation",18)
  center.add_child(column)
- label(column,"NEÓN KANTO / EDICIÓN 0.20",18).modulate=Color("64dfd3")
+ label(column,"NEÓN KANTO / EDICIÓN 0.24",18).modulate=Color("64dfd3")
  label(column,"La deuda del aire",48)
  var description=label(column,"Un mundo roto. Un compañero. Una señal que todavía puede responder.",20)
  description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -125,7 +139,7 @@ func build_world():
  world_texture.size_flags_vertical=Control.SIZE_EXPAND_FILL
  world_texture.mouse_filter=Control.MOUSE_FILTER_IGNORE
  world_screen.add_child(world_texture)
- var minimap=preload("res://scripts/ui/world_minimap.gd").new()
+ minimap=preload("res://scripts/ui/world_minimap.gd").new()
  minimap.game=game
  world_texture.add_child(minimap)
  minimap.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
@@ -143,8 +157,10 @@ func build_world():
  for data in [["EQUIPO [P]","party"],["BOLSA [B]","bag"],["CÓDEX [N]","dex"],["IMPLANTES","workshop"],["RED [K]","campaign"],["ARCHIVOS","journal"],["AUXILIO [L]","field"],["CHIPS [J]","chips"],["MISIÓN","air_journal"],["GUARDAR","save"]]:
   var action_id:String=data[1]
   button(controls,data[0],func():game.action(action_id)).focus_mode=Control.FOCUS_NONE
+ exit_button=button(controls,"SALIR A PALETA",func():game.action("interior_exit"))
+ exit_button.focus_mode=Control.FOCUS_NONE
 func handles_mode()->bool:
- return game.mode in ["title","settings","party","techniques"] or (game.mode=="world" and game.modern_view!=null and game.interior_id=="")
+ return game.mode in exploration_screen.MODES or game.mode in ["title","settings","party","techniques","archive","shop","chips","dialogue","air_dialogue"] or (game.mode=="world" and (game.modern_view!=null or game.interior_view!=null))
 func legacy_transform(size_value:Vector2)->Transform2D:
  var factor=minf(size_value.x/960.0,size_value.y/720.0)
  return Transform2D(0,Vector2.ONE*factor,0,(size_value-Vector2(960,720)*factor)*.5)
@@ -164,10 +180,13 @@ func _process(_delta):
  var changed=last_mode!=game.mode
  last_mode=game.mode
  title_screen.visible=game.mode=="title"
- world_screen.visible=game.mode=="world" and game.modern_view!=null and game.interior_id==""
+ world_screen.visible=game.mode=="world" and (game.modern_view!=null or game.interior_view!=null)
  if settings_screen: settings_screen.visible=game.mode=="settings"
  battle_hud.sync_frame()
  team_screen.sync_frame()
+ commerce_screen.sync_frame()
+ dialogue_screen.sync_frame()
+ exploration_screen.sync_frame()
  if changed:
   if game.mode!="battle":
    game.battle_canvas_width=960.0
@@ -178,14 +197,18 @@ func _process(_delta):
    (candidates[0] if game.save_exists else candidates[1]).grab_focus()
 
  if not world_screen.visible: return
+ minimap.visible=game.interior_id==""
+ exit_button.visible=game.interior_id!=""
  zone_label.text=["Paleta / Refugio 07","La Brecha","Distrito Cromo"][game.zone]
+ if game.interior_id!="": zone_label.text="Clínica / Aire común" if game.interior_id=="clinic" else "Oak / Archivo vivo"
  status_label.text="CORRUPCIÓN %d%%   /   ₽%d"%[game.corruption(game.zone),game.money]
  objective_label.text="E · Interactuar   /   WASD · Mover   /   "+game.AIR_OBJECTIVES[game.air_quest]
  notice_label.text=game.notice if game.notice_time>0 else (game.radio_text if game.radio_seconds>0 else "Red de auxilio: %d/3 instalaciones restauradas"%game.restored_sites.size())
- world_texture.texture=game.modern_view.get_texture()
+ var current_view=game.interior_view if game.interior_id!="" else game.modern_view
+ world_texture.texture=current_view.get_texture()
  var pixel_ratio=Vector2(get_viewport().size)/get_viewport().get_visible_rect().size
  var resolution=Vector2i(world_texture.size*pixel_ratio)
- if resolution.x>0 and resolution.y>0: game.modern_view.size=resolution
+ if resolution.x>0 and resolution.y>0: current_view.size=resolution
 func open_settings():
  if game.mode not in ["title","world"]: return
  return_mode=game.mode
@@ -278,6 +301,15 @@ func build_settings():
  button(body,"VOLVER [ESC]",close_settings).grab_focus()
 func _input(event):
  if not event is InputEventKey or not event.pressed or event.echo: return
+ if game.mode in exploration_screen.MODES and exploration_screen.handle_key(event.physical_keycode):
+  get_viewport().set_input_as_handled()
+  return
+ if game.mode in ["dialogue","air_dialogue"] and dialogue_screen.handle_key(event.physical_keycode):
+  get_viewport().set_input_as_handled()
+  return
+ if game.mode in ["archive","shop","chips"] and commerce_screen.handle_key(event.physical_keycode):
+  get_viewport().set_input_as_handled()
+  return
  if game.mode in ["party","techniques"] and team_screen.handle_key(event.physical_keycode):
   get_viewport().set_input_as_handled()
   return

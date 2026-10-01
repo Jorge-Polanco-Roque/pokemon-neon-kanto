@@ -64,3 +64,10 @@ QA 0.19: los cinco loops se verificaron con audio nativo. La copia de pruebas de
 A petición del usuario, la capa ambiental tiene mayor presencia y tensión: drones cercanos desafinados, tritono, resonancias de ataque lento y ecos cruzados de 317/731 ms. Los osciladores usan ciclos enteros y los ecos son circulares para conservar el loop de 24 s. No hay sustos súbitos añadidos.
 
 Fuente: pico -11,06 dBFS; reproductor a -4 dB, conservando preferencias del usuario. El nivel de pico aumenta 6,9 dB frente a 0.19. Las músicas de batalla aprobadas permanecen iguales. Los ejemplos de dos vueltas son concatenación PCM exacta, sin fades de demostración.
+
+
+## Título y auditoría de loops 0.21
+
+Nuevo `title.wav`: 84 BPM, 16 compases, 45,714286 s, síntesis original con pulsos, bajo FM y campanas metálicas de ataque suave. Se reutilizan motivos de la partitura original del proyecto para coherencia, con tonalidad, ritmo y arreglo más lento. Las otras cinco pistas musicales se comprobaron mediante SHA-256 antes/después: no cambiaron.
+
+Título, prólogo y selector inicial usan este tema; ajustes desde el título lo conservan. Hay diez loops de fondo (cinco musicales y cinco ambientales). La prueba nativa avanza hasta 0,3 s antes del final de cada pista y comprueba que el cursor vuelve al inicio sin detenerse. Se desactiva el control automático de los directores exclusivamente en la copia QA para evitar que la pausa por falta de foco interfiera con la prueba. La victoria conserva reproducción única.

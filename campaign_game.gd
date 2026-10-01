@@ -546,7 +546,7 @@ func _draw():
 func draw_title():
  super.draw_title()
  box(Rect2(55,670,450,30),Color("0b1324"))
- label_at("EDICIÓN 0.20 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
+ label_at("EDICIÓN 0.24 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
 
 func draw_world():
  if interior_id!="":
@@ -810,11 +810,7 @@ func draw_interior():
  button(Rect2(472,671,211,34),"GUARDAR [F5]","save")
  button(Rect2(694,671,238,34),"SALIR A PALETA","interior_exit")
 
-func draw_air_dialogue():
- draw_world()
- box(Rect2(0,0,960,720),Color(0,0,0,.78))
- panel(Rect2(110,155,740,432),Color("142738"),CYAN)
- label_at("AIRE PARA LOS QUE QUEDAN",Vector2(141,203),25,CYAN)
+func air_dialogue_text()->String:
  var text_value=AIR_OBJECTIVES[air_quest]
  if air_dialogue!="objective":
   if interior_id=="clinic":
@@ -822,6 +818,14 @@ func draw_air_dialogue():
   else:
    text_value=["OAK: Sena necesita manos en la clínica del oeste. Ve a escucharla. Algunas reparaciones importan más que vencer a NEXUS.","OAK: Esta membrana se cultivó a partir de una semilla de Lía. Puedo entregártela, pero falta un regulador. El dron del patio central lo confiscó: tendrás que desactivarlo.","OAK: Ya llevas la membrana. Busca el regulador en el patio central, cerca de (14,9). Pulsa E junto al relé; prepara a tu compañero antes de combatir.","OAK: El regulador está intacto. Vuelve con Sena; puedes llevar oxígeno donde NEXUS solo ve una deuda.","OAK: Guardaré una copia del registro. Mientras recordemos a Lía por lo que hizo, la red no podrá reducirla a una cifra."][air_quest]
  if air_dialogue=="healed": text_value="SENA: Tu equipo ya recuperó todos sus PS y PP. También eliminé las quemaduras, el sueño y la parálisis.\n"+AIR_OBJECTIVES[air_quest]
+ return text_value
+
+func draw_air_dialogue():
+ draw_world()
+ box(Rect2(0,0,960,720),Color(0,0,0,.78))
+ panel(Rect2(110,155,740,432),Color("142738"),CYAN)
+ label_at("AIRE PARA LOS QUE QUEDAN",Vector2(141,203),25,CYAN)
+ var text_value=air_dialogue_text()
  paragraph(text_value,Vector2(141,249),675,21,WHITE)
  if campaign_save_error!="": paragraph(campaign_save_error,Vector2(141,390),675,13,PINK)
  buttons=[]

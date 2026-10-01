@@ -1,7 +1,7 @@
 # Pokémon Neón Kanto — Plan de producción
 
 Actualizado: 2026-09-26. Base auditada: edición 0.13, Godot 4.6.2, guardado v10.
-Estado: P1 en curso. 0.16 añade equipo, biblioteca y reemplazo adaptables al HUD de combate de 0.15. Interiores y los demás menús heredados todavía usan el adaptador.
+Estado: P1 en curso. 0.22 añade mercados y caja adaptables al equipo/biblioteca de 0.16 y combate de 0.15. 0.23 incorpora diálogos y los interiores de clínica/archivo. Otros menús heredados todavía usan el adaptador.
 
 ## 1. Mandato y forma de trabajar
 
@@ -160,9 +160,9 @@ Dependencia: auditoría P0; no necesita nuevos assets.
 
 - [x] ~~Crear `SettingsService` y escena de ajustes: ventana/completa, tamaño, escala UI, volumen y reducción de movimiento.~~ 0.14: interfaz Control, preferencias atómicas separadas, volumen general, cámara/ambiente reducido. Suite `settings` y revisión gráfica.
 - [x] ~~Añadir diseño panorámico con adaptador temporal para los menús heredados. Migrar título, opciones, HUD de exploración y panel de combate primero.~~ 0.15 completa el panel de combate con controles nativos, escala UI, PP, estados y equipo de seis criaturas.
-- [ ] Ajustar cámara y resolución de `SubViewport` al rectángulo disponible; preservar clics y proporciones. **Parcial 0.14:** ~~exterior a resolución física disponible y transformación inversa del adaptador~~; ~~combate proyectado al área disponible con criaturas sin deformación~~ en 0.15; falta revisar interiores migrados.
-- [ ] Revisar listas de seis criaturas, nombres largos, PP, diálogos y notificaciones. **Parcial 0.15:** ~~selector de seis criaturas en combate, PP y acciones bloqueadas~~; 0.16 completa ~~equipo fuera de combate, biblioteca y reemplazo con foco/desplazamiento y PP restantes~~; faltan los demás menús y diálogos.
-- [ ] Probar 1280×720, 1600×900, 1920×1080, 2560×1440, 16:10 y una ventana ultrapanorámica; escalas 100/125/150 %. **Parcial 0.14:** 18 combinaciones del HUD verificadas con render real; opciones revisadas al 150 %, ida/vuelta de pantalla completa en macOS y seis transformaciones inversas de input. 0.15 añade 54 combinaciones de combate (tres menús × seis tamaños solicitados × tres escalas), con render real y controles dentro del viewport. 0.16 añade 54 combinaciones de equipo/biblioteca/reemplazo, pie visible y desplazamiento al control enfocado. Falta aplicar la matriz al resto de menús que se migren.
+- [ ] Ajustar cámara y resolución de `SubViewport` al rectángulo disponible; preservar clics y proporciones. **Parcial 0.14:** ~~exterior a resolución física disponible y transformación inversa del adaptador~~; ~~combate proyectado al área disponible con criaturas sin deformación~~ en 0.15; ~~interiores de clínica/archivo con resolución física y cámara proporcional~~ en 0.23.
+- [ ] Revisar listas de seis criaturas, nombres largos, PP, diálogos y notificaciones. **Parcial 0.15:** ~~selector de seis criaturas en combate, PP y acciones bloqueadas~~; 0.16 completa ~~equipo fuera de combate, biblioteca y reemplazo con foco/desplazamiento y PP restantes~~; 0.22 completa ~~mercados de suministros/chips y caja con paginación, foco y restricciones~~; 0.23 completa ~~diálogos generales y misión del aire con texto desplazable~~; faltan los demás menús heredados.
+- [ ] Probar 1280×720, 1600×900, 1920×1080, 2560×1440, 16:10 y una ventana ultrapanorámica; escalas 100/125/150 %. **Parcial 0.14:** 18 combinaciones del HUD verificadas con render real; opciones revisadas al 150 %, ida/vuelta de pantalla completa en macOS y seis transformaciones inversas de input. 0.15 añade 54 combinaciones de combate (tres menús × seis tamaños solicitados × tres escalas), con render real y controles dentro del viewport. 0.16 añade 54 combinaciones de equipo/biblioteca/reemplazo, pie visible y desplazamiento al control enfocado. 0.22 añade 54 combinaciones de mercados/caja, con restricciones y persistencia verificadas. 0.23 añade 54 combinaciones de interior y diálogos, incluyendo texto largo. Falta aplicar la matriz al resto de menús que se migren.
 
 Salida: ventana amplia y utilizable, preferencias persistentes, cero controles cortados, retorno correcto de pantalla completa, guardado intacto. Adjuntar capturas comparables; no basta editar `project.godot`.
 
@@ -277,12 +277,15 @@ No hay presupuesto, fecha límite ni hardware mínimo formal acordados. No inven
 
 ## 10. Punto de reanudación
 
-**Próximo trabajo: continuar P1 con mercados, caja, diálogos e interiores adaptables.**
+**Próximo trabajo: revisar y migrar los menús heredados restantes de P1; después iniciar la referencia visual de Paleta (P2).**
 
-Primera entrega 0.14 completada: ajustes persistentes, ventana panorámica ajustada al monitor, título/HUD adaptables y adaptador clásico. Segunda entrega 0.15: HUD de combate nativo con escenario adaptable, poses, efectos, PP y controles escalables. Tercera entrega 0.16: equipo, biblioteca y reemplazo adaptables, con PP preservados. Próximo lote: mercados y caja; después diálogos e interiores. No mezclar la migración con expansión del mapa. P0 conserva pendientes medición prolongada, cargas, memoria del proceso y escucha de mezcla.
+Primera entrega 0.14 completada: ajustes persistentes, ventana panorámica ajustada al monitor, título/HUD adaptables y adaptador clásico. Segunda entrega 0.15: HUD de combate nativo con escenario adaptable, poses, efectos, PP y controles escalables. Tercera entrega 0.16: equipo, biblioteca y reemplazo adaptables, con PP preservados. Cuarta entrega 0.22: mercados y caja adaptables, con 54 layouts verificados. Quinta entrega 0.23: diálogos y clínica/archivo adaptables. Próximo lote: inventario, códex y paneles de red/misión restantes. No mezclar la migración con expansión del mapa. P0 conserva pendientes medición prolongada, cargas, memoria del proceso y escucha de mezcla.
 
 Registro de entregas del plan:
 
+- 2026-10-01 — 0.23 / P1 diálogos e interiores: suite `presentation`, 54 layouts nativos y acciones de misión/curación/salida verificadas. Evidencia en `docs/qa/qa-dialogue-023.json`.
+- 2026-09-30 — 0.22 / P1 mercados y caja: suite `chips`, 54 layouts nativos, conservación de datos, restricciones y guardado/recarga; evidencia en `docs/qa/qa-commerce-022.json`.
+- 2026-09-29 — 0.21 / loops: tema de título original a 84 BPM y auditoría nativa de las diez pistas de fondo; fanfarria de victoria no repetitiva.
 - 2026-09-28 — 0.20 / ambiente solicitado: mayor presencia (+6,9 dB de pico al mismo ajuste), drones disonantes y ecos circulares; loops preservados, sin cambios en batallas.
 - 2026-09-28 — 0.19 / audio: cinco ambientes periódicos, bus independiente, transición por distrito/interior y retirada en combate. Música existente preservada.
 - 2026-09-28 — 0.18 / audio solicitado: composición programática original con referencias de batalla Pokémon, cinco pistas, buses y fundidos. Se adelanta este bloque de P3 por petición del usuario; P1/P2 no se consideran completadas.

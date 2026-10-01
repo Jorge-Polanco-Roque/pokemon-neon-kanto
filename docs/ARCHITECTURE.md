@@ -100,3 +100,17 @@ El controlador de campaña notifica victoria, mientras el director resuelve los 
 `build_ambience.py` sintetiza ruido periódico mediante FFT, zumbidos de ciclos enteros y eventos con colas circulares. No usa samples ni el RNG del juego. Cinco WAV PCM de 24 segundos alimentan `AmbienceDirector`, con dos reproductores, fundidos de 1,2 segundos y bus Ambience → Master. La selección usa distrito e interior; combate/título/prólogo/evolución retiran la capa. La música no se sustituye ni se modifica.
 
 SettingsService conserva un nivel `ambience_volume` por defecto de 0,6 para ajustes antiguos. La suite de audio comprueba selección, silencio en combate, retorno, persistencia y mute. La QA nativa verifica los cinco empalmes reproduciendo desde el final real y graba el bus de ambiente antes de Master.
+
+
+## Edición 0.22 — mercados y almacenamiento
+
+`CommerceScreen` reutiliza el contenedor, pie fijo, botones y restauración de foco de `TeamScreen`, cuya construcción se separa en `build_contents()`. `ScreenRoot` enruta los modos archive/shop/chips a controles nativos. Las mutaciones pasan por las acciones existentes; no cambia el formato de partida. Chips mantienen sus transacciones automáticas; suministros y caja muestran recordatorios de guardado manual F5. Los retratos usan `CreaturePortrait` y sus aumentos cibernéticos.
+
+La revisión nativa verifica 54 layouts, desplazamiento al foco, equipo lleno, último compañero consciente, conservación de datos/PP, compras, compatibilidad, enseñanza y recarga. La suite chips cubre regresión de transacciones y aprendizaje. No sustituye una revisión completa con mando.
+
+
+## Edición 0.23 — conversaciones e interiores
+
+`DialogueScreen` reutiliza el contenedor desplazable de TeamScreen. El texto narrativo de la misión vive en `campaign_game.air_dialogue_text()`, compartido con el dibujado heredado. Todas las opciones despachan las acciones existentes. ScreenRoot presenta clínica/archivo usando su SubViewport a resolución física, oculta el minimapa exterior y añade salida. La cámara interior conserva altura y amplía encuadre en relaciones estrechas.
+
+La QA nativa cubre 54 layouts, texto largo al 150 %, curación, aceptación, membrana y retorno a posición exterior. No completa la migración de los demás menús ni una revisión de mando.

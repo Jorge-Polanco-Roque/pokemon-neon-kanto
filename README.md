@@ -1,6 +1,31 @@
-> **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; siguen mercados, diálogos e interiores.
+> **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; mercados y caja adaptables en 0.22; diálogos e interiores adaptables en 0.23; quedan otros menús heredados.
 
-## Edición 0.20 — Ambientes más oscuros y presentes
+## Edición 0.23 — Diálogos e interiores adaptables
+
+- ~~Migrar conversaciones y misión del aire.~~ Texto ajustable y desplazable, opciones por teclado y botones nativos; errores de guardado visibles.
+- ~~Adaptar clínica y archivo.~~ Render a la resolución disponible, cámara que conserva proporciones, HUD compartido y salida a Paleta.
+- ~~Verificar transiciones y acciones.~~ 54 combinaciones de resolución, escala y pantalla; aceptar misión, recibir membrana, curar y regresar al exterior comprobados. Suite `presentation` aprobada.
+
+Las pistas de fondo mantienen sus loops. P1 conserva pendientes otros menús heredados y la revisión completa de navegación; la renovación artística de Paleta pertenece a P2.
+
+## Historial 0.22 — Mercados y caja adaptables
+
+- ~~Migrar suministros, chips y caja a controles nativos.~~ Listas desplazables, pie fijo, navegación por foco y escala de interfaz.
+- ~~Mostrar costes, saldo, compatibilidad y requisitos.~~ Las acciones no disponibles se bloquean y los retratos conservan sus componentes cibernéticos.
+- ~~Proteger los movimientos del equipo.~~ La caja conserva técnicas y PP, bloquea retirar con seis compañeros y depositar al último compañero consciente.
+- ~~Verificar presentación y persistencia.~~ 54 combinaciones de tamaños, escalas y menús; compra, enseñanza, guardado y recarga comprobados. Evidencia en `docs/qa/qa-commerce-022.json`.
+
+Las compras de chips y el aprendizaje mantienen su guardado automático. Suministros y movimientos de caja requieren guardar con F5. Las diez pistas de fondo mantienen sus loops. P1 sigue abierta: faltan diálogos, interiores y otros menús heredados.
+
+## Historial 0.21 — Título y verificación de todos los loops
+
+- ~~Tema propio de título.~~ Composición cibernética lenta en tono menor, a 84 BPM, con pulsos y resonancias metálicas. Loop de 45,71 segundos; se usa en título, prólogo y selección inicial, y continúa al abrir ajustes desde el título.
+- ~~Diez pistas de fondo en repetición.~~ Título, exploración, tres batallas y cinco ambientes. Cada stream repite desde el frame 0 hasta su longitud exacta; la victoria sigue siendo una fanfarria de una sola reproducción.
+- ~~Prueba nativa de todos los empalmes.~~ Reproduce el final real de cada pista y comprueba que sigue reproduciendo desde el inicio. Evidencia en `docs/qa/qa-loops-021.json`; suite `audio` ampliada. Las cinco pistas musicales previas se conservaron byte por byte durante la generación del nuevo título.
+
+Las muestras de dos vueltas ya contienen el empalme. El reproductor del chat puede terminar al finalizar el archivo; dentro del juego la repetición es automática.
+
+## Historial 0.20 — Ambientes más oscuros y presentes
 
 - ~~Cinco ambientes reforzados.~~ Drones graves con batimientos, intervalos disonantes, resonancias lejanas y ecos metálicos. Se conservan las identidades por ubicación, con entradas progresivas.
 - ~~Mayor presencia.~~ Pico de las fuentes de -11,06 dBFS y reproducción a -4 dB: aproximadamente +6,9 dB respecto a 0.19 al mismo volumen de usuario. El deslizador Ambientes sigue disponible en F10.
