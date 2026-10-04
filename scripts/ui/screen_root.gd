@@ -18,6 +18,7 @@ var last_layout=Vector2.ZERO
 var last_mode=""
 var battle_hud
 var team_screen
+var special_screen
 var exploration_screen
 var dialogue_screen
 var minimap
@@ -72,6 +73,9 @@ func setup(controller):
  exploration_screen=preload("res://scripts/ui/exploration_screen.gd").new()
  root.add_child(exploration_screen)
  exploration_screen.setup(game,self)
+ special_screen=preload("res://scripts/ui/special_screen.gd").new()
+ root.add_child(special_screen)
+ special_screen.setup(game,self)
  update_layout()
 func full(node:Control):
  node.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -109,7 +113,7 @@ func build_title():
  column.custom_minimum_size.x=620
  column.add_theme_constant_override("separation",18)
  center.add_child(column)
- label(column,"NEÓN KANTO / EDICIÓN 0.24",18).modulate=Color("64dfd3")
+ label(column,"NEÓN KANTO / EDICIÓN 0.29",18).modulate=Color("64dfd3")
  label(column,"La deuda del aire",48)
  var description=label(column,"Un mundo roto. Un compañero. Una señal que todavía puede responder.",20)
  description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -160,7 +164,7 @@ func build_world():
  exit_button=button(controls,"SALIR A PALETA",func():game.action("interior_exit"))
  exit_button.focus_mode=Control.FOCUS_NONE
 func handles_mode()->bool:
- return game.mode in exploration_screen.MODES or game.mode in ["title","settings","party","techniques","archive","shop","chips","dialogue","air_dialogue"] or (game.mode=="world" and (game.modern_view!=null or game.interior_view!=null))
+ return game.mode in special_screen.MODES or game.mode in exploration_screen.MODES or game.mode in ["title","settings","party","techniques","archive","shop","chips","dialogue","air_dialogue"] or (game.mode=="world" and (game.modern_view!=null or game.interior_view!=null))
 func legacy_transform(size_value:Vector2)->Transform2D:
  var factor=minf(size_value.x/960.0,size_value.y/720.0)
  return Transform2D(0,Vector2.ONE*factor,0,(size_value-Vector2(960,720)*factor)*.5)
@@ -187,6 +191,7 @@ func _process(_delta):
  commerce_screen.sync_frame()
  dialogue_screen.sync_frame()
  exploration_screen.sync_frame()
+ special_screen.sync_frame()
  if changed:
   if game.mode!="battle":
    game.battle_canvas_width=960.0
@@ -301,6 +306,9 @@ func build_settings():
  button(body,"VOLVER [ESC]",close_settings).grab_focus()
 func _input(event):
  if not event is InputEventKey or not event.pressed or event.echo: return
+ if game.mode in special_screen.MODES and special_screen.handle_key(event.physical_keycode):
+  get_viewport().set_input_as_handled()
+  return
  if game.mode in exploration_screen.MODES and exploration_screen.handle_key(event.physical_keycode):
   get_viewport().set_input_as_handled()
   return

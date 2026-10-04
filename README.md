@@ -1,6 +1,51 @@
-> **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; mercados y caja adaptables en 0.22; diálogos e interiores adaptables en 0.23; quedan otros menús heredados.
+> **Plan activo:** [CLAUDE.md](CLAUDE.md). P1 está en curso: pantalla, ajustes y HUD de combate implementados; equipo y biblioteca también adaptables en 0.16; mercados y caja adaptables en 0.22; diálogos e interiores adaptables en 0.23; bolsa, códex, implantes y red/archivos/auxilio adaptables en 0.24; pantallas especiales adaptables en 0.25; la revisión transversal de P1 sigue pendiente.
 
-## Edición 0.23 — Diálogos e interiores adaptables
+## Edición 0.28 — Interacciones sonoras y lectura de Paleta
+
+- ~~Crear efectos propios de pasos, UI, terminal y curación.~~ Síntesis determinista con NumPy, archivos PCM y bus SFX. Pasos con alternancia de tono; voces limitadas y canal de pasos separado.
+- ~~Conectar eventos reales.~~ Los movimientos bloqueados no emiten pasos; funcionan también en interiores. Apertura de hackeo, curación y selección utilizan los nuevos sonidos.
+- ~~Reducir obstrucción visual.~~ Menor altura de las torres del primer plano derecho en Paleta; rótulos contextuales y sus contornos desaparecen al alejarse.
+
+Validación: suite `interactions` (eventos, restricciones, mute y loops musicales conservados) y revisión nativa de plaza/Oak. Evidencia en `docs/qa/qa-interactions-028.json`. Música y ambientes siguen en loop; estos efectos de acción se reproducen una vez. La mezcla completa y la revisión general de oclusiones siguen pendientes.
+
+## Historial 0.27 — Habitantes y vegetación
+
+- ~~Refinar Mara y habitantes de referencia.~~ Cabeza y extremidades redondeadas, cuello, respirador, hombreras, cinturón, bolsillo y terminales de muñeca; colores individuales conservados.
+- ~~Articular rodillas y balanceo al caminar.~~ Cada actor tiene sus clips independientes; al detenerse vuelve a la pose de reposo.
+- ~~Mejorar vegetación de Paleta y suministros del refugio.~~ Hojas volumétricas en dos grupos MultiMesh; cajas y bandejas en cubiertas, sin bloquear rutas.
+
+Validación: suite `presentation`, flexión de rodilla, reinicio en reposo, independencia de animaciones y dos grupos de hojas. Revisión nativa de plaza y primeros planos en `docs/qa/qa-actors-027.json`. Continúa pendiente el acabado completo de P2. Música y ambientes conservan sus loops.
+
+## Historial 0.26 — Paleta: arquitectura del refugio
+
+- ~~Crear dirección artística y primer kit modular de Paleta.~~ Clínica de cerámica/cobre con depósitos de oxígeno; archivo de paneles verdes con módulos de conservación. Fachadas con rejillas, ventanas retranqueadas, pretiles y puertas iluminadas.
+- ~~Renovar el pavimento de la plaza.~~ Losas, juntas, drenajes, marcas de cruce, guías empotradas y charcos selectivos.
+- ~~Verificar integración.~~ Revisión nativa de plaza y entradas a clínica/archivo, retorno a posición exterior y geometría estable; suite `presentation` aprobada.
+
+Dirección y pendientes en `docs/art/PALETA_DIRECCION.md`; evidencia en `docs/qa/qa-paleta-026.json`. P2 sigue en curso: faltan personajes, vegetación y acabado completo. Pikachu conserva su arte previo. Música y ambientes mantienen sus loops.
+
+## Historial 0.25 — Selección, hackeo y decisiones adaptables
+
+- ~~Migrar la selección inicial.~~ Cuatro compañeros, incluido Pikachu cibernético; cuadrícula adaptable y atajos 1–4.
+- ~~Migrar hackeo.~~ Secuencia legible, cuenta atrás y símbolos bloqueados durante lectura o después de un error; reinicio y salida visibles.
+- ~~Migrar evolución.~~ Retrato original y evolucionado, progreso de sincronización sin destello de pantalla; conserva temporizadores, técnicas e implantes.
+- ~~Migrar decisiones de núcleo y desenlaces.~~ Consecuencias desplazables, elección separada de confirmación, errores de guardado visibles y los tres finales conservados.
+
+Validación: 90 layouts nativos (cinco pantallas × seis tamaños × tres escalas), cuatro iniciales, lectura/error/reinicio del hackeo, evolución con conservación de datos, cancelación, reversión ante fallo y recarga. Suite `campaign`: 27 rutas y tres finales. Evidencia en `docs/qa/qa-special-025.json`.
+
+La implementación de los menús previstos está migrada; P1 conserva revisión transversal de navegación y accesibilidad. El prólogo mantiene su presentación cinematográfica. La renovación artística de Paleta pertenece a P2. Música y ambientes mantienen sus loops.
+
+## Historial 0.24 — Menús de exploración adaptables
+
+- ~~Migrar bolsa y códex.~~ Pociones con restricciones visibles, catálogo en cuadrícula adaptable, fichas con memoria, evolución, voz y retratos cibernéticos compartidos.
+- ~~Migrar implantes, red, archivos y auxilio.~~ Listas desplazables y pie fijo, desbloqueos visibles, registros protegidos y reparación condicionada a proximidad y compatibilidad.
+- ~~Mantener visible el control enfocado tras reconstruir la interfaz.~~ El desplazamiento espera al cálculo de los contenedores, también al cambiar la escala de texto.
+
+Validación: 126 layouts nativos (siete paneles × seis tamaños × tres escalas), foco visible, pociones, memoria del códex, instalación de módulos, acceso a registros, reparación y guardado/recarga. Suite `field` aprobada. Evidencia en `docs/qa/qa-exploration-024.json`.
+
+Pociones e implantes mantienen el guardado manual F5; reparaciones conservan su guardado automático y reversión ante fallo. Las pistas de fondo mantienen sus loops. La migración P1 aún conserva pantallas especiales: selección inicial, hackeo, evolución, decisiones de núcleo y desenlace; no equivale a completar P2.
+
+## Historial 0.23 — Diálogos e interiores adaptables
 
 - ~~Migrar conversaciones y misión del aire.~~ Texto ajustable y desplazable, opciones por teclado y botones nativos; errores de guardado visibles.
 - ~~Adaptar clínica y archivo.~~ Render a la resolución disponible, cámara que conserva proporciones, HUD compartido y salida a Paleta.

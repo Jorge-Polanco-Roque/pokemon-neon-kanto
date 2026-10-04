@@ -11,6 +11,7 @@ var destination = Vector3.ZERO
 var navigating = false
 var speed = 1.3
 var materials = {}
+var occlusion_parts:Array[MeshInstance3D]=[]
 
 func material(color:Color,emissive=false)->StandardMaterial3D:
  var key=str(color)+str(emissive)
@@ -50,6 +51,7 @@ func _ready():
      surface.emission=accent_color
     surface.albedo_color=color
     item.material_override=surface
+  refine_model()
   motion.play("idle")
   return
  torso=Node3D.new()
@@ -110,6 +112,7 @@ func _ready():
   idle.track_insert_key(track,0.0,0.0)
  library.add_animation("idle",idle)
  motion.add_animation_library("",library)
+ refine_model()
  motion.play("idle")
 
 func set_pose(at:Vector3,direction:Vector2,moving:bool):
@@ -132,3 +135,80 @@ func _physics_process(delta):
   destination_reached.emit()
  else:
   set_pose(position.move_toward(destination,speed*delta),Vector2(direction.x,direction.z),true)
+
+func rounded(item:MeshInstance3D,radius:float,height:float,width_scale=1.0):
+ var mesh=CapsuleMesh.new()
+ mesh.radius=radius
+ mesh.height=height
+ mesh.radial_segments=10
+ mesh.rings=4
+ item.mesh=mesh
+ item.scale=Vector3(width_scale,1,1)
+
+func refine_model():
+ # Retain the scene's rig and clips; improve silhouette without touching collisions.
+ rounded(torso.get_node("Head"),.17,.34,.95)
+ rounded(torso.get_node("Coat"),.18,.61,1.2)
+ rounded(torso.get_node("Hair"),.18,.2,1.03)
+ torso.get_node("Hair").scale.y=.7
+ var collar=part(torso,"Collar",Vector3(0,1.18,0),Vector3(.43,.13,.31),coat_color.lightened(.12))
+ rounded(collar,.17,.18,1.3)
+ part(torso,"UtilityBelt",Vector3(0,.70,.03),Vector3(.45,.08,.31),Color("253440"))
+ part(torso,"Buckle",Vector3(0,.70,.20),Vector3(.085,.06,.03),Color("b99068"))
+ part(torso,"Pouch",Vector3(.20,.70,.11),Vector3(.13,.18,.14),Color("5a655f"))
+ part(torso,"ScarfTail",Vector3(-.13,1.10,-.22),Vector3(.12,.38,.035),coat_color.lightened(.16))
+ for side in [-1,1]:
+  var filter=part(torso,"RespiratorFilter",Vector3(side*.12,1.34,.22),Vector3(.1,.1,.1),Color("75888b"))
+  rounded(filter,.05,.10)
+  var arm=torso.get_node("LeftArm" if side<0 else "RightArm")
+  rounded(arm.get_node("Sleeve"),.085,.37)
+  part(arm,"ShoulderPanel",Vector3(side*.025,-.055,0),Vector3(.20,.13,.24),coat_color.darkened(.25))
+  part(arm,"WristInterface",Vector3(0,-.30,.105),Vector3(.11,.11,.035),accent_color,true)
+  var leg=torso.get_node("LeftLeg" if side<0 else "RightLeg")
+  var thigh=leg.get_node("Trousers")
+  thigh.position.y=-.12
+  rounded(thigh,.083,.25)
+  var knee=Node3D.new()
+  knee.name="Knee"
+  knee.position.y=-.26
+  leg.add_child(knee)
+  var shin=part(knee,"Shin",Vector3(0,-.105,0),Vector3(.14,.23,.16),Color("263c48"))
+  rounded(shin,.075,.24)
+  part(knee,"KneeGuard",Vector3(0,.025,.085),Vector3(.14,.12,.05),Color("68787a"))
+  var boot=leg.get_node("Boot")
+  boot.reparent(knee)
+  boot.position=Vector3(0,-.28,.05)
+  part(knee,"Sole",Vector3(0,-.35,.05),Vector3(.21,.035,.33),Color("162832"))
+ # Animation libraries are shared by the packed scene; edits must be per actor.
+ var library=motion.get_animation_library("").duplicate(true)
+ motion.remove_animation_library("")
+ motion.add_animation_library("",library)
+ var walk=library.get_animation("walk")
+ for side in ["LeftLeg","RightLeg"]:
+  var track=walk.add_track(Animation.TYPE_VALUE)
+  walk.track_set_path(track,NodePath("Rig/"+side+"/Knee:rotation:x"))
+  for i in range(9):
+   var phase=i*TAU/8+(0 if side=="LeftLeg" else PI)
+   walk.track_insert_key(track,i*walk.length/8,-maxf(0,sin(phase))*.65)
+ var sway=walk.add_track(Animation.TYPE_VALUE)
+ walk.track_set_path(sway,NodePath("Rig:rotation:z"))
+ for i in range(9): walk.track_insert_key(sway,i*walk.length/8,sin(i*TAU/8)*.025)
+ var idle=library.get_animation("idle")
+ for path in ["Rig/LeftLeg/Knee:rotation:x","Rig/RightLeg/Knee:rotation:x","Rig:rotation:z"]:
+  var track=idle.add_track(Animation.TYPE_VALUE)
+  idle.track_set_path(track,NodePath(path))
+  idle.track_insert_key(track,0,0)
+
+func set_occluded(value:bool):
+ if value and occlusion_parts.is_empty():
+  var highlight=ShaderMaterial.new()
+  highlight.shader=preload("res://shaders/occluded_actor.gdshader")
+  highlight.render_priority=100
+  for original in find_children("*","MeshInstance3D",true,false):
+   var ghost=MeshInstance3D.new()
+   ghost.mesh=original.mesh
+   ghost.material_override=highlight
+   ghost.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+   original.add_child(ghost)
+   occlusion_parts.append(ghost)
+ for ghost in occlusion_parts: ghost.visible=value

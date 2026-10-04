@@ -31,6 +31,7 @@ var screen_root
 var music_director
 var ambience_director
 var modern_view: SubViewport
+var interaction_audio
 var interior_view: SubViewport
 var interior_id=""
 var exterior_pos=Vector2i(13,12)
@@ -60,6 +61,9 @@ func _ready():
  ambience_director=preload("res://scripts/audio/ambience_director.gd").new()
  add_child(ambience_director)
  ambience_director.setup(self)
+ interaction_audio=preload("res://scripts/audio/interaction_audio.gd").new()
+ add_child(interaction_audio)
+ interaction_audio.setup(self)
  if DisplayServer.get_name()!="headless":
   modern_view=preload("res://scenes/world/modern_world.tscn").instantiate()
   add_child(modern_view)
@@ -351,6 +355,7 @@ func damage(attacker:Dictionary,defender:Dictionary,power:int,kind:String)->int:
  return hit
 
 func move_player(direction:Vector2i):
+ var prior_position=pos
  if interior_id!="":
   facing=direction
   step_cool=.14
@@ -358,9 +363,11 @@ func move_player(direction:Vector2i):
   if next==Vector2i(8,11):
    leave_interior()
   elif interior_walkable(next): pos=next
+  if pos!=prior_position and interior_id!="" and interaction_audio: interaction_audio.play_event("step")
   return
  var previous=steps
  super.move_player(direction)
+ if steps!=previous and interaction_audio: interaction_audio.play_event("step")
  if steps!=previous and mode=="world" and core_fates.get(str(zone),"")=="release" and steps%8==0 and not party.is_empty():
   party[active].hp=mini(party[active].maxhp,party[active].hp+2)
 
@@ -546,7 +553,7 @@ func _draw():
 func draw_title():
  super.draw_title()
  box(Rect2(55,670,450,30),Color("0b1324"))
- label_at("EDICIÓN 0.24 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
+ label_at("EDICIÓN 0.29 / LA DEUDA DEL AIRE",Vector2(60,690),12,Color("8da7bb"))
 
 func draw_world():
  if interior_id!="":
@@ -630,6 +637,12 @@ func draw_campaign():
  if ending_id!="": button(Rect2(55,610,378,43),"VOLVER A VER EL DESENLACE","ending_review")
  button(Rect2(449,610,449,43),"VOLVER [K / ESC]","campaign_close")
 
+func core_choice_descriptions()->Array:
+ return ["Despierta a "+SPECIES[RESTORED_IDS[maxi(0,pending_core)]][0]+" como compañero. Si el equipo está lleno, irá a la caja.\n\nBiosfera +1. Corrupción baja a 35%.","Devuelve la memoria al ecosistema. No recibes compañero.\n\nBiosfera +2. Corrupción 0%. Caminar 8 pasos en el distrito recupera 2 PS del líder.","Consume el núcleo para obtener ₽500 y 5 Balls. Esa memoria no podrá regresar.\n\nBiosfera +0. La corrupción queda en 70%; los encuentros conservan +15% de daño."]
+
+func ending_text()->String:
+ return {"rebirth":"NEXUS pierde el control de una biosfera que ya no cabe en sus órdenes. Las memorias liberadas germinan entre el metal. No has recuperado el mundo de Sena: has permitido que nazca otro, sin dueño.","sanctuary":"NEXUS calla, pero la ciudad conserva sus cicatrices. Algunas memorias regresan al ecosistema; otras caminan junto a ti. La vida vuelve despacio, protegida por vínculos que ninguna red puede imponer.","ashes":"Has silenciado a NEXUS consumiendo casi todas las memorias que custodiaba. La ciudad tiene energía y las calles siguen iluminadas. Bajo el neón, sin embargo, ya no queda suficiente vida para reconstruir el bosque."}.get(ending_id,"")
+
 func draw_core_choice():
  box(Rect2(0,0,960,720),Color("080f20"))
  buttons=[]
@@ -638,7 +651,7 @@ func draw_core_choice():
  paragraph("Has detenido a su guardián. Puedes devolverle un cuerpo, dejar que restaure el distrito o consumir su energía. La decisión se guarda al confirmarla.",Vector2(44,128),861,18,Color("b3c9d7"))
  var keys=["reactivate","release","sacrifice"]
  var titles=["REACTIVAR","LIBERAR","SACRIFICAR"]
- var descriptions=["Despierta a "+SPECIES[RESTORED_IDS[maxi(0,pending_core)]][0]+" como compañero. Si el equipo está lleno, irá a la caja.\n\nBiosfera +1. Corrupción baja a 35%.","Devuelve la memoria al ecosistema. No recibes compañero.\n\nBiosfera +2. Corrupción 0%. Caminar 8 pasos en el distrito recupera 2 PS del líder.","Consume el núcleo para obtener ₽500 y 5 Balls. Esa memoria no podrá regresar.\n\nBiosfera +0. La corrupción queda en 70%; los encuentros conservan +15% de daño."]
+ var descriptions=core_choice_descriptions()
  for i in range(3):
   var x=43+i*294
   panel(Rect2(x,211,279,340),Color("16283c"),CYAN if pending_fate==keys[i] else Color("3e5368"))
@@ -661,7 +674,7 @@ func draw_ending():
  buttons=[]
  label_at("LA ÚLTIMA SINAPSIS / DESENLACE",Vector2(60,68),15,color)
  label_at({"rebirth":"Un bosque sin dueño","sanctuary":"El refugio de las voces","ashes":"La ciudad de las cenizas"}.get(ending_id,"La última sinapsis"),Vector2(59,132),36,color)
- var text_value={"rebirth":"NEXUS pierde el control de una biosfera que ya no cabe en sus órdenes. Las memorias liberadas germinan entre el metal. No has recuperado el mundo de Sena: has permitido que nazca otro, sin dueño.","sanctuary":"NEXUS calla, pero la ciudad conserva sus cicatrices. Algunas memorias regresan al ecosistema; otras caminan junto a ti. La vida vuelve despacio, protegida por vínculos que ninguna red puede imponer.","ashes":"Has silenciado a NEXUS consumiendo casi todas las memorias que custodiaba. La ciudad tiene energía y las calles siguen iluminadas. Bajo el neón, sin embargo, ya no queda suficiente vida para reconstruir el bosque."}.get(ending_id,"")
+ var text_value=ending_text()
  paragraph(text_value,Vector2(62,214),822,23,WHITE)
  label_at("BIOSFERA RESTAURADA  "+str(score)+" / 6",Vector2(62,398),18,color)
  for i in range(3):
@@ -1078,3 +1091,14 @@ func draw_field_operations():
   button(Rect2(x,y,440,45),combat_name(creature)+" / "+("COMPLETADO" if field_site in restored_sites else ("USAR PROTOCOLO" if ready else "NO DISPONIBLE")),"" if field_site in restored_sites else "field_use:"+str(i))
  paragraph(field_notice if field_notice!="" else "Cada instalación: ₽180, una poción y menos corrupción. Completa las tres: ₽500 extra y licencia Enjambre. Todo se guarda al reparar.",Vector2(30,581),895,17,CYAN)
  button(Rect2(30,670,900,36),"VOLVER AL MAPA [ESC / L]","field_close")
+
+func begin_hack():
+ super.begin_hack()
+ if interaction_audio: interaction_audio.play_event("terminal")
+func heal_party():
+ super.heal_party()
+ if interaction_audio: interaction_audio.play_event("heal")
+func beep(hz=660.0,duration=.08):
+ if interaction_audio and is_equal_approx(hz,660.0) and is_equal_approx(duration,.08):
+  interaction_audio.play_event("ui")
+ else: super.beep(hz,duration)

@@ -75,6 +75,14 @@ func rebuild():
  else:
   for control in buttons_by_action.values():
    if not control.disabled: control.grab_focus(); break
+ call_deferred("reveal_focused_control")
+func reveal_focused_control():
+ # Container geometry settles after rebuilding; focus may already be unchanged.
+ await get_tree().process_frame
+ if not is_visible_in_tree(): return
+ var focused=get_viewport().gui_get_focus_owner()
+ if is_instance_valid(focused) and content.is_ancestor_of(focused):
+  scroll.ensure_control_visible(focused)
 func build_contents():
  if game.mode=="party": build_party()
  elif game.pending_technique!="": build_replacement()

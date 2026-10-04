@@ -1,7 +1,7 @@
 # Pokémon Neón Kanto — Plan de producción
 
 Actualizado: 2026-09-26. Base auditada: edición 0.13, Godot 4.6.2, guardado v10.
-Estado: P1 en curso. 0.22 añade mercados y caja adaptables al equipo/biblioteca de 0.16 y combate de 0.15. 0.23 incorpora diálogos y los interiores de clínica/archivo. Otros menús heredados todavía usan el adaptador.
+Estado: P2 en curso; revisión transversal de P1 pendiente. 0.22 añade mercados y caja adaptables al equipo/biblioteca de 0.16 y combate de 0.15. 0.23 incorpora diálogos y los interiores de clínica/archivo. 0.24 incorpora bolsa, códex/ficha, implantes, red, archivos y auxilio. 0.25 incorpora selección, hackeo, evolución, decisiones y desenlaces. La implementación de menús está migrada; queda revisión transversal.
 
 ## 1. Mandato y forma de trabajar
 
@@ -161,8 +161,8 @@ Dependencia: auditoría P0; no necesita nuevos assets.
 - [x] ~~Crear `SettingsService` y escena de ajustes: ventana/completa, tamaño, escala UI, volumen y reducción de movimiento.~~ 0.14: interfaz Control, preferencias atómicas separadas, volumen general, cámara/ambiente reducido. Suite `settings` y revisión gráfica.
 - [x] ~~Añadir diseño panorámico con adaptador temporal para los menús heredados. Migrar título, opciones, HUD de exploración y panel de combate primero.~~ 0.15 completa el panel de combate con controles nativos, escala UI, PP, estados y equipo de seis criaturas.
 - [ ] Ajustar cámara y resolución de `SubViewport` al rectángulo disponible; preservar clics y proporciones. **Parcial 0.14:** ~~exterior a resolución física disponible y transformación inversa del adaptador~~; ~~combate proyectado al área disponible con criaturas sin deformación~~ en 0.15; ~~interiores de clínica/archivo con resolución física y cámara proporcional~~ en 0.23.
-- [ ] Revisar listas de seis criaturas, nombres largos, PP, diálogos y notificaciones. **Parcial 0.15:** ~~selector de seis criaturas en combate, PP y acciones bloqueadas~~; 0.16 completa ~~equipo fuera de combate, biblioteca y reemplazo con foco/desplazamiento y PP restantes~~; 0.22 completa ~~mercados de suministros/chips y caja con paginación, foco y restricciones~~; 0.23 completa ~~diálogos generales y misión del aire con texto desplazable~~; faltan los demás menús heredados.
-- [ ] Probar 1280×720, 1600×900, 1920×1080, 2560×1440, 16:10 y una ventana ultrapanorámica; escalas 100/125/150 %. **Parcial 0.14:** 18 combinaciones del HUD verificadas con render real; opciones revisadas al 150 %, ida/vuelta de pantalla completa en macOS y seis transformaciones inversas de input. 0.15 añade 54 combinaciones de combate (tres menús × seis tamaños solicitados × tres escalas), con render real y controles dentro del viewport. 0.16 añade 54 combinaciones de equipo/biblioteca/reemplazo, pie visible y desplazamiento al control enfocado. 0.22 añade 54 combinaciones de mercados/caja, con restricciones y persistencia verificadas. 0.23 añade 54 combinaciones de interior y diálogos, incluyendo texto largo. Falta aplicar la matriz al resto de menús que se migren.
+- [ ] Revisar listas de seis criaturas, nombres largos, PP, diálogos y notificaciones. **Parcial 0.15:** ~~selector de seis criaturas en combate, PP y acciones bloqueadas~~; 0.16 completa ~~equipo fuera de combate, biblioteca y reemplazo con foco/desplazamiento y PP restantes~~; 0.22 completa ~~mercados de suministros/chips y caja con paginación, foco y restricciones~~; 0.23 completa ~~diálogos generales y misión del aire con texto desplazable~~; 0.24 completa ~~bolsa, códex/ficha, implantes, red, archivos y auxilio~~; 0.25 completa ~~selección inicial, hackeo, evolución, decisiones de núcleo y desenlaces~~; queda revisión integral de navegación y accesibilidad.
+- [ ] Probar 1280×720, 1600×900, 1920×1080, 2560×1440, 16:10 y una ventana ultrapanorámica; escalas 100/125/150 %. **Parcial 0.14:** 18 combinaciones del HUD verificadas con render real; opciones revisadas al 150 %, ida/vuelta de pantalla completa en macOS y seis transformaciones inversas de input. 0.15 añade 54 combinaciones de combate (tres menús × seis tamaños solicitados × tres escalas), con render real y controles dentro del viewport. 0.16 añade 54 combinaciones de equipo/biblioteca/reemplazo, pie visible y desplazamiento al control enfocado. 0.22 añade 54 combinaciones de mercados/caja, con restricciones y persistencia verificadas. 0.23 añade 54 combinaciones de interior y diálogos, incluyendo texto largo. 0.24 añade 126 combinaciones de siete paneles de exploración y corrige foco tras reconstrucción. 0.25 añade ~~90 combinaciones de las cinco pantallas especiales~~. Queda revisión transversal de navegación y accesibilidad.
 
 Salida: ventana amplia y utilizable, preferencias persistentes, cero controles cortados, retorno correcto de pantalla completa, guardado intacto. Adjuntar capturas comparables; no basta editar `project.godot`.
 
@@ -170,12 +170,12 @@ Salida: ventana amplia y utilizable, preferencias persistentes, cero controles c
 
 Dependencia: P1. Alcance acotado: plaza de Paleta, una entrada interior y un combate.
 
-- [ ] Hoja de dirección artística y kit modular: fachada, puerta, ventana, cubierta, borde de acera, suelo, tuberías, luminarias y señalización.
-- [ ] Rehacer la plaza con composición, materiales coherentes, superficies húmedas selectivas y decoración con función narrativa.
-- [ ] Mejorar Mara y un NPC de referencia; caminar y reposo comprobados.
-- [ ] Implementar la infraestructura de buses y un ambiente de Paleta con pasos, UI, terminal y curación.
+- [x] ~~Hoja de dirección artística y primer kit modular: fachada, puerta, ventana, cubierta, suelo, tuberías, luminarias y señalización.~~ 0.26: `docs/art/PALETA_DIRECCION.md` y `PaletaKit`; el borde urbano y acabado final siguen pendientes.
+- [ ] Rehacer la plaza con composición, materiales coherentes, superficies húmedas selectivas y decoración con función narrativa. **Parcial 0.26:** ~~fachadas diferenciadas por uso, pavimento, drenajes, guías y charcos localizados~~; 0.27 añade ~~vegetación de hojas volumétricas y suministros sobre cubiertas~~; falta completar utilería narrativa y borde urbano.
+- [x] ~~Mejorar Mara y un NPC de referencia; caminar y reposo comprobados.~~ 0.27: siluetas redondeadas, equipo personal, rodillas articuladas y balanceo; clips independientes y regreso a reposo verificados.
+- [x] ~~Implementar la infraestructura de buses y un ambiente de Paleta con pasos, UI, terminal y curación.~~ Buses/ambiente en 0.18–0.20; 0.28 añade cuatro efectos originales y eventos con pool limitado, mute y foco. La escucha de mezcla completa permanece en P3.
 - [ ] Trabajar Pikachu como criatura de referencia; si el asset sigue bloqueado, señalarlo y usar una criatura existente para validar la integración, sin dar Pikachu por resuelto.
-- [ ] Revisar encuadre, lectura de entradas, oclusión y escena de batalla con el nuevo HUD.
+- [ ] Revisar encuadre, lectura de entradas, oclusión y escena de batalla con el nuevo HUD. **Parcial 0.28:** ~~plaza/Oak con torres delanteras más bajas y rótulos por proximidad~~; falta revisión completa de rutas, cámara y batalla.
 
 Salida: una porción pequeña con el acabado objetivo y evidencia visual/sonora. Congelar sus reglas de estilo antes de replicarla. No extender decoración de baja calidad por todo el mapa.
 
@@ -277,12 +277,17 @@ No hay presupuesto, fecha límite ni hardware mínimo formal acordados. No inven
 
 ## 10. Punto de reanudación
 
-**Próximo trabajo: revisar y migrar los menús heredados restantes de P1; después iniciar la referencia visual de Paleta (P2).**
+**Próximo trabajo: revisar cámara/oclusiones en todas las rutas de Paleta y combate; consolidar la referencia visual P2. 0.28 integra efectos de interacción y despeja el primer plano derecho. La mezcla completa de P3 y revisión transversal de P1 siguen abiertas.**
 
-Primera entrega 0.14 completada: ajustes persistentes, ventana panorámica ajustada al monitor, título/HUD adaptables y adaptador clásico. Segunda entrega 0.15: HUD de combate nativo con escenario adaptable, poses, efectos, PP y controles escalables. Tercera entrega 0.16: equipo, biblioteca y reemplazo adaptables, con PP preservados. Cuarta entrega 0.22: mercados y caja adaptables, con 54 layouts verificados. Quinta entrega 0.23: diálogos y clínica/archivo adaptables. Próximo lote: inventario, códex y paneles de red/misión restantes. No mezclar la migración con expansión del mapa. P0 conserva pendientes medición prolongada, cargas, memoria del proceso y escucha de mezcla.
+Primera entrega 0.14 completada: ajustes persistentes, ventana panorámica ajustada al monitor, título/HUD adaptables y adaptador clásico. Segunda entrega 0.15: HUD de combate nativo con escenario adaptable, poses, efectos, PP y controles escalables. Tercera entrega 0.16: equipo, biblioteca y reemplazo adaptables, con PP preservados. Cuarta entrega 0.22: mercados y caja adaptables, con 54 layouts verificados. Quinta entrega 0.23: diálogos y clínica/archivo adaptables. Sexta entrega 0.24: inventario, códex/ficha, implantes y red/archivos/auxilio adaptables. Séptima entrega 0.25: pantallas especiales adaptables. 0.26 inicia P2 con dirección artística, fachadas y pavimento de Paleta. 0.27 refina Mara/NPC, animación y vegetación. Próximo lote: oclusión, borde urbano y efectos de interacción; mantener pendiente la revisión integral de navegación/accesibilidad de P1. No mezclar la migración con expansión del mapa. P0 conserva pendientes medición prolongada, cargas, memoria del proceso y escucha de mezcla.
 
 Registro de entregas del plan:
 
+- 2026-10-03 — 0.28 / P2 interacciones: cuatro SFX originales, eventos y pool limitado; suite `interactions` y QA de rótulos/plaza/Oak.
+- 2026-10-03 — 0.27 / P2 habitantes: rig conservado y refinado, articulación de rodillas, clips independientes, hojas agrupadas y suministros. Suite `presentation` y QA nativa aprobadas.
+- 2026-10-03 — 0.26 / P2 Paleta: primer kit modular y pavimento; QA nativa de plaza/entradas y suite `presentation`. Pikachu sigue pendiente tras el bloqueo del generador.
+- 2026-10-01 — 0.25 / P1 pantallas especiales: 90 layouts nativos, cuatro iniciales, hackeo, evolución y confirmación/reversión verificados; suite `campaign` cubre 27 rutas y tres finales. Evidencia en `docs/qa/qa-special-025.json`.
+- 2026-10-01 — 0.24 / P1 exploración: siete paneles nativos, 126 layouts, acciones y guardado/recarga verificados; suite `field` aprobada. Evidencia en `docs/qa/qa-exploration-024.json`.
 - 2026-10-01 — 0.23 / P1 diálogos e interiores: suite `presentation`, 54 layouts nativos y acciones de misión/curación/salida verificadas. Evidencia en `docs/qa/qa-dialogue-023.json`.
 - 2026-09-30 — 0.22 / P1 mercados y caja: suite `chips`, 54 layouts nativos, conservación de datos, restricciones y guardado/recarga; evidencia en `docs/qa/qa-commerce-022.json`.
 - 2026-09-29 — 0.21 / loops: tema de título original a 84 BPM y auditoría nativa de las diez pistas de fondo; fanfarria de victoria no repetitiva.

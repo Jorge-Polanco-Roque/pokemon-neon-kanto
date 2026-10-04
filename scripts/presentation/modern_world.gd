@@ -1,5 +1,6 @@
 extends SubViewport
 ## Presentation only: receives map data and poses; does not own saves or combat.
+const PaletaKit=preload("res://scripts/presentation/paleta_kit.gd")
 const ACTOR = preload("res://scenes/actors/citizen.tscn")
 var stage: Node3D
 var camera: Camera3D
@@ -16,6 +17,7 @@ var focus=Vector3(13.5,0,9)
 var elapsed=0.0
 var field_rotors:Array=[]
 var scene_key=""
+var occluders:Array[AABB]=[]
 var prologue_mode=false
 var prologue_act=0
 var accent=Color("5bd9df")
@@ -125,6 +127,7 @@ func cylinder(at:Vector3,radius:float,height:float,color:Color,emission=false):
 func text_sign(text_value:String,at:Vector3,color:Color,size_value=34):
  var label=Label3D.new()
  label.text=text_value
+ if text_value.contains("/ E") or text_value=="ARCHIVO": label.set_meta("nearby_hint",true)
  label.position=at
  label.font_size=size_value
  label.pixel_size=.017
@@ -152,7 +155,7 @@ func flush_geometry():
   mesh.size=Vector3.ONE
   var multimesh=MultiMesh.new()
   multimesh.transform_format=MultiMesh.TRANSFORM_3D
-  multimesh.mesh=mesh
+  multimesh.mesh=batch.get("mesh",mesh)
   multimesh.instance_count=batch.transforms.size()
   for i in range(batch.transforms.size()): multimesh.set_instance_transform(i,batch.transforms[i])
   var item=MultiMeshInstance3D.new()
@@ -164,6 +167,8 @@ func flush_geometry():
 
 func begin_build(key:String):
  scene_key=key
+ occluders.clear()
+ if is_instance_valid(player): player.set_occluded(false)
  if district_root:
   stage.remove_child(district_root)
   district_root.queue_free()
@@ -223,6 +228,7 @@ func ground():
    var x=14+side*(17+(i%2)*3)
    var z=-5+i*3.6
    var height=4.0+(i*7)%9
+   if scene_key=="district:0" and side==1 and z>10: height*=.45
    tower(Vector3(x,height/2,z),Vector3(3.7,height,3.1),i)
  for i in range(9):
   var height=5.0+(i*3)%8
@@ -268,6 +274,8 @@ func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:
     surface.position=q+Vector3(0,.04,0)
     district_root.add_child(surface)
     if (x+y)%5==0: box(q+Vector3(0,.06,0),Vector3(.52,.02,.025),Color("347381"),true)
+   elif kind in ["grass","flowers"] and index==0:
+    PaletaKit.vegetation(self,q,x,y)
    elif kind in ["grass","flowers"]:
     box(q,Vector3(.98,.08,.98),Color("203f3e"))
     for j in range(3):
@@ -278,7 +286,12 @@ func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:
    else:
     if x%3==0: box(q+Vector3(-.48,.012,0),Vector3(.025,.016,1),Color("475966"))
     if y%2==0: box(q+Vector3(0,.012,-.48),Vector3(1,.016,.025),Color("475966"))
- for building_data in structures: building(building_data,index)
+   if index==0: PaletaKit.paving(self,q,kind,x,y)
+ for building_data in structures:
+  var footprint:Rect2i=building_data[0]
+  var height=3.4 if building_data[1]!="GIMNASIO" else 4.8
+  occluders.append(AABB(Vector3(footprint.position.x,0,footprint.position.y),Vector3(footprint.size.x,height,footprint.size.y)))
+  building(building_data,index)
  for i in range(terminals.size()):
   var q=Vector3(terminals[i].x+.5,0,terminals[i].y+.5)
   kiosk(q,accent)
@@ -294,7 +307,8 @@ func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:
  if index==0:
   kiosk(Vector3(14.5,0,9.5),Color("f6c876"))
   text_sign("REGULADOR / E",Vector3(14.5,1.65,9.5),Color("f6c876"),20)
-  text_sign("PALÉTA / REFUGIO 07",Vector3(14,2.2,1),accent,34)
+  PaletaKit.plaza(self)
+  PaletaKit.maintenance(self)
   for i in range(3):
    cylinder(Vector3(3.5+i*1.8,.4,12),.53,.6,Color("2e5661"))
    cylinder(Vector3(3.5+i*1.8,.73,12),.44,.06,accent,true)
@@ -320,6 +334,9 @@ func build_district(index:int,tiles:Array,structures:Array,terminals:Array,logs:
  flush_geometry()
 
 func building(data:Array,index:int):
+ if index==0 and not prologue_mode:
+  PaletaKit.facade(self,data)
+  return
  var r:Rect2i=data[0]
  var center=Vector3(r.position.x+r.size.x*.5,0,r.position.y+r.size.y*.5)
  var w=float(r.size.x)
@@ -498,6 +515,7 @@ func _process(delta):
   var point:Vector2i=companion_path.pop_front()
   partner.navigate_to(Vector3(point.x+.5,0,point.y+.5))
  update_camera(delta)
+ player.set_occluded(actor_is_occluded())
  for visitor in visitors:
   var actor=visitor.actor
   if not actor.navigating and actor.position.distance_to(player.position)>.8:
@@ -507,6 +525,10 @@ func _process(delta):
    visitor.next=(visitor.next+1)%visitor.route.size()
  for child in district_root.get_children():
   if child is CPUParticles3D: child.emitting=not reduced_motion
+  if child is Label3D and child.has_meta("nearby_hint"):
+   var distance=Vector2(child.position.x-player.position.x,child.position.z-player.position.z).length()
+   child.modulate.a=clampf(1.0-(distance-2.5)/4.0,0.0,1.0)
+   child.outline_modulate.a=child.modulate.a
  for transport in vehicles:
   if reduced_motion: continue
   transport.node.position=transport.base+Vector3(sin(elapsed*.22)*3.0 if transport.train else sin(elapsed*.3)*6,0 if transport.train else sin(elapsed)*.08,0)
@@ -541,3 +563,10 @@ func build_relief_site(index:int,online:bool):
   for y in [.40,.63,.86]: box(q+Vector3(0,y,.23),Vector3(.31,.04,.02),signal_color,true)
  text_sign(("AUXILIO / ACTIVO" if online else "AUXILIO / E"),q+Vector3(0,2.13,0),signal_color,20)
  light(q+Vector3(0,1.3,.6),signal_color,.6 if online else .3,2.0)
+
+func actor_is_occluded()->bool:
+ if prologue_mode: return false
+ var target=player.position+Vector3(0,1.05,0)
+ for bounds in occluders:
+  if bounds.intersects_segment(camera.position,target)!=null: return true
+ return false

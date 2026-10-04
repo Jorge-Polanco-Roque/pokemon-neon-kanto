@@ -1,0 +1,26 @@
+{
+  "step": {
+    "seconds": 0.14,
+    "peak_dbfs": -15.0,
+    "loop": false,
+    "origin": "original NumPy synthesis, seed 2800"
+  },
+  "ui": {
+    "seconds": 0.08501133786848072,
+    "peak_dbfs": -10.0,
+    "loop": false,
+    "origin": "original NumPy synthesis, seed 2801"
+  },
+  "terminal": {
+    "seconds": 0.48,
+    "peak_dbfs": -10.0,
+    "loop": false,
+    "origin": "original NumPy synthesis, seed 2802"
+  },
+  "heal": {
+    "seconds": 1.35,
+    "peak_dbfs": -10.0,
+    "loop": false,
+    "origin": "original NumPy synthesis, seed 2803"
+  }
+}

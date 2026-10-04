@@ -114,3 +114,36 @@ La revisión nativa verifica 54 layouts, desplazamiento al foco, equipo lleno, �
 `DialogueScreen` reutiliza el contenedor desplazable de TeamScreen. El texto narrativo de la misión vive en `campaign_game.air_dialogue_text()`, compartido con el dibujado heredado. Todas las opciones despachan las acciones existentes. ScreenRoot presenta clínica/archivo usando su SubViewport a resolución física, oculta el minimapa exterior y añade salida. La cámara interior conserva altura y amplía encuadre en relaciones estrechas.
 
 La QA nativa cubre 54 layouts, texto largo al 150 %, curación, aceptación, membrana y retorno a posición exterior. No completa la migración de los demás menús ni una revisión de mando.
+
+
+## Edición 0.24 — paneles de exploración
+
+`ExplorationScreen` deriva de TeamScreen y presenta bag/dex/detail/workshop/campaign/journal/field. Las acciones existentes conservan autoridad sobre PS, módulos, registros y reparaciones. La interfaz bloquea acciones no disponibles y muestra motivos/contexto. Códex y ficha usan CreaturePortrait para conservar aumentos cibernéticos y mipmaps; la cuadrícula elige dos o cuatro columnas según ancho y escala.
+
+TeamScreen revela el foco después de que los contenedores calculen su geometría. Evita dejar fuera del área visible un botón cuyo foco se conserva al reconstruir la interfaz. Los menús no cambian la versión ni la política de guardado; suministros/implantes siguen siendo manuales y auxilio mantiene transacciones automáticas.
+
+
+## Edición 0.25 — pantallas especiales
+
+`SpecialScreen` reutiliza el contenedor y restauración de foco de TeamScreen. ScreenRoot enruta starter/hacking/evolution/core_choice/ending. El estado visual del hackeo se reconstruye al cambiar lectura, entrada o error; la cuenta atrás actualiza una etiqueta. Evolution actualiza progreso y species_id del retrato sin reconstrucción por frame, conserva el temporizador del controlador y no añade flashes. Los atajos globales de audio/pantalla siguen disponibles.
+
+Las consecuencias y narrativa final se consultan en core_choice_descriptions()/ending_text(), compartidas con el render heredado. Selección y confirmación despachan acciones distintas; no se aplica ni guarda una elección por enfocarla. commit_fate conserva la reversión ante error. No se modifica el formato de partida ni las pistas de audio.
+
+
+## Edición 0.26 — kit de Paleta
+
+`PaletaKit` recibe el viewport de presentación para emitir geometría agrupada mediante sus helpers. Solo se aplica al distrito 0, fuera del prólogo. Fachadas usan las huellas y puertas existentes; pavimento se omite en agua, vegetación y obstáculos. Charcos recortados usan ShaderMaterial independiente sin animación ni RNG. No cambia colisiones, guardados ni lógica de interacción. La geometría permanece ligada a scene_key y no se reconstruye por frame.
+
+
+## Edición 0.27 — refinamiento del rig y hojas
+
+Citizen.refine_model conserva nombres del rig base y añade Knee bajo cada pierna; recoloca bota y pantorrilla. Duplica AnimationLibrary antes de extender walk/idle para evitar mutación cruzada entre instancias. No altera posición lógica ni navegación. El constructor procedural y la escena guardada comparten refinamiento.
+
+Los batches de ModernWorld aceptan mesh opcional; por defecto siguen usando BoxMesh. PaletaKit agrupa todas las hojas en dos SphereMesh de pocos segmentos mediante MultiMesh, sin nodos por hoja ni RNG. La utilería nueva permanece en cubiertas.
+
+
+## Edición 0.28 — efectos de interacción
+
+InteractionAudio usa cuatro AudioStreamPlayer en SFX: uno exclusivo para pasos y tres rotatorios para eventos. No consume RNG. La UI limita disparos a uno cada 55 ms; pasos alternan pitch 0.94/1.06. Campaign conecta movimiento exitoso, begin_hack y heal_party; beep con parámetros por defecto se sustituye por UI, conservando otros tonos heredados. Los efectos no se repiten y se pausan con pérdida de foco/mute. El generador build_interactions.py conserva procedencia, semilla y picos en manifest.json.
+
+ModernWorld atenúa texto y contorno de rótulos contextuales por distancia horizontal. Paleta baja torres del primer plano derecho; no altera colisiones ni geometría jugable.
